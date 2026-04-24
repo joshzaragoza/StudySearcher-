@@ -6,7 +6,7 @@ function login() {
     const message = document.getElementById("message");
 
     if (uid === "" || password === "") {
-        message.textContent("Please fill in all fields.");
+        message.textContent = "Please fill in all fields.";
         return;
     }
     
@@ -15,11 +15,11 @@ function login() {
     if (foundUser) {
         message.textContent = `Welcome, ${foundUser.name}!`;
 
-        localStorage.setItem("loggedInUser", foundUser.email);
+        localStorage.setItem("loggedInUser", foundUser.uid);
 
     // Later we can redirect pages here
     // window.location.href = "dashboard.html";
-    
+
     } else {
         message.textContent = "Invalid UID or password.";
     }
