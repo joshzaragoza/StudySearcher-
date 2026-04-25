@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
-const bycrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const User = require('./userData/user');
 
 
@@ -16,3 +16,8 @@ mongoose.connect(process.env.MONGO_URI).then(() => {
     console.error("Error connecting to MongoDB:", err);
 });
 
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+})
