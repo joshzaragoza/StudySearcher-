@@ -2,6 +2,10 @@
 
 Note: You have to have two terminals running frontend and backend seperately. 
 
+## Initial Setup:
+1. clone the repo
+2. run 'npm install'
+
 ## Frontend: React
 ### How to set up:
 1. open terminal 
