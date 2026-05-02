@@ -1,23 +1,23 @@
-const express = require('express');
-const mongoose = require('mongoose');
 require('dotenv').config();
 
-const app = express();
-const bcrypt = require('bcrypt');
-const User = require('./userData/user');
+const express = require('express');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/auth');
 
+const app = express();
 
 app.use(express.json());
-app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
+app.use('/', authRoutes);
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
     console.log("Connected to MongoDB");
-}).catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-});
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-})
+    app.listen(3000, () => {
+      console.log("Backend running on http://localhost:3000");
+    });
+  })
+  .catch((err) => {
+    console.log("MongoDB error:", err);
+  });
