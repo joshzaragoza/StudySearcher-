@@ -2,16 +2,23 @@
 <html>
 <head>
     <title>Study Searcher</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Study Searcher Login</h1>
 
-    <input id="uid" type="uid" placeholder="UID">
-    <input id="password" type="password" placeholder="Password">
-    
-    <button onClick="login()">Login</button>
+    <div class="container"> 
 
-    <p id="message"></p>
+        <h1>Study Searcher Login</h1>
+
+        <input id="uid" type="text" placeholder="UID">
+        <input id="password" type="password" placeholder="Password">
+        
+        <button onclick="login()">Login</button>
+
+        <p id="message"></p>
+
+    </div>
+
     <script src="jsFiles/login.js"></script>
 </body>
 </html>

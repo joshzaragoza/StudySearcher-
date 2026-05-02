@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Sign up - Study Searcher</title>
-    </head>
-    <body>
-        <h1>Create Acccount</h1>
-    <input id = "name" type="text" placeholder="Name">
-    <input id="uid" type="text" placeholder="UID">
-    <input id="pwd" type="password" placeholder="Password">
-    <button onClick="signup()">Sign up</button>
-    <p id="message"></p>
+<head>
+    <title>Sign up - Study Searcher</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Create Account</h1>
+
+        <input id="name" type="text" placeholder="Name">
+        <input id="uid" type="text" placeholder="UID">
+        <input id="pwd" type="password" placeholder="Password">
+
+        <button onclick="signup()">Sign up</button>
+
+        <p id="message"></p>
+
+        <p>Already have an account? <a href="index.html">Login</a></p>
+
+    </div> 
+
     <script src="jsFiles/signup.js"></script>
-    </body>
+</body>
 </html>
