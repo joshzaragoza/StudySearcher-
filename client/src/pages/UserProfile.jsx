@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 function UserProfile() {
     const [name, setName] = useState(null);
     const [classInput, setClassInput] = useState("");
+    const [professorInput, setProfessorInput] = useState("");
     const [classes, setClasses] = useState([]);
     const [availability, setAvailability] = useState({
         monday: "",
@@ -28,8 +29,9 @@ function UserProfile() {
 
     function handleAddClass() {
         if (classInput.trim() !== "") {
-            setClasses([...classes, classInput.trim()]);
+            setClasses([...classes, {name: classInput.trim(), professor: professorInput.trim() } ]);
             setClassInput("");
+            setProfessorInput("");
         }
     }
 
@@ -51,10 +53,16 @@ function UserProfile() {
                     value={classInput}
                     onChange={(e) => setClassInput(e.target.value)}
                 />
+                <input
+                    type="text"
+                    placeholder="Enter professor name"
+                    value={professorInput}
+                    onChange={(e) => setProfessorInput(e.target.value)}
+                />
                 <button onClick={handleAddClass}>Add Class</button>
                 <ul>
                     {classes.map((c, i) => (
-                        <li key={i}>{c}</li>
+                        <li key={i}>{c.name} - {c.professor}</li>
                     ))}
                 </ul>
             </div>
