@@ -52,6 +52,11 @@ function UserProfile() {
                     onChange={(e) => setClassInput(e.target.value)}
                 />
                 <button onClick={handleAddClass}>Add Class</button>
+                <ul>
+                    {classes.map((c, i) => (
+                        <li key={i}>{c}</li>
+                    ))}
+                </ul>
             </div>
         </>
     );  
