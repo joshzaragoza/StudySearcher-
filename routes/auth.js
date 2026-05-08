@@ -54,11 +54,13 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({message: "UID must be exactly 9 digits."});
         }
 
+        const user = await User.findOne({ uid });
+
         if(!user) {
             return res.status(400).json({ message: "Invalid UID or password." });
         }
 
-        const passwordMatch = await bycrypt.compare(password, user.password);
+        const passwordMatch = await bcrypt.compare(password, user.password);
         
         if (!passwordMatch) {
             return res.status(400).json({ message: "Invalid UID or password." });
