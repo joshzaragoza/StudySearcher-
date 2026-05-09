@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 
 
+
 function UserProfile() {
     const [name, setName] = useState(null);
     const [classInput, setClassInput] = useState("");
     const [professorInput, setProfessorInput] = useState("");
     const [classes, setClasses] = useState([]);
+    const [error, setError] = useState("");
     const [availability, setAvailability] = useState({
         monday: "",
         tuesday: "",
@@ -26,15 +28,21 @@ function UserProfile() {
     if (!name) {
         return <div>Loading...</div>;
     }
-
+    
     function handleAddClass() {
-        if (classInput.trim() !== "") {
+        if (classInput.trim() === "" || professorInput.trim() === "") {
+            setError("Please fill in all fields");
+        } else {
             setClasses([...classes, {name: classInput.trim(), professor: professorInput.trim() } ]);
             setClassInput("");
             setProfessorInput("");
+            setError("");
         }
     }
 
+    function handleRemoveClass(indexToRemove) {
+        setClasses(classes.filter((_, index) => index !== indexToRemove));
+    }
     return (
         <>
             <div>
@@ -61,10 +69,12 @@ function UserProfile() {
                 />
                 <button onClick={handleAddClass}>Add Class</button>
                 <ul>
-                    {classes.map((c, i) => (
-                        <li key={i}>{c.name} - {c.professor}</li>
+                    {classes.map((c, i) => (<li key ={i}>{c.name} - {c.professor}
+                        <button onClick={() => handleRemoveClass(i)}>Remove</button>
+                    </li>
                     ))}
-                </ul>
+                    </ul>
+                {error && <p>{error}</p>}
             </div>
         </>
     );  
