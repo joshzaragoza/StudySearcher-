@@ -28,7 +28,7 @@ router.get("/:id/profile", async (req, res) => {
 
         const availability = await pool.query(
             `
-            SELECT day, time
+            SELECT day_of_week, start_time, end_time
             FROM availability
             WHERE user_id = $1
             `,
