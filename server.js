@@ -1,25 +1,42 @@
 require('dotenv').config();
 
 const express = require('express');
-const mongoose = require('mongoose');
-const authRoutes = require('./routes/auth');
 const cors = require("cors");
+const { Pool } = require("pg");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-app.use('/', authRoutes);
+const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGSSLMODE, PGCHANNELBINDING } = process.env;
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
+const pool = new Pool({
+    host: PGHOST,
+    database: PGDATABASE,
+    user: PGUSER,
+    password: PGPASSWORD,
+    port: 5432,
+    ssl: {
+        require: true,
+        rejectUnauthorized: false
+    }
+});
 
-    app.listen(3000, () => {
-      console.log("Backend running on http://localhost:3000");
-    });
-  })
-  .catch((err) => {
-    console.log("MongoDB error:", err);
-  });
+app.get("/", async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query("SELECT * FROM classes");
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    } finally {
+        // Release the client back to the pool
+        client.release();
+    }
+});
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
