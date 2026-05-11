@@ -6,7 +6,7 @@
   "scripts": {
     "clear-port": "kill -9 $(lsof -ti :3000) 2>/dev/null || true",
     "start": "npm run clear-port && node server.js",
-    "server": "npm run clear-port && nodemon server.js",
+    "server": "npm run clear-port && node server.js",
     "client": "npm run dev --prefix client"
   },
   "repository": {
