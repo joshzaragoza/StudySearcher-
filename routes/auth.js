@@ -29,7 +29,7 @@ router.post('/signup', async (req, res) => {
 
     //creating new user
     await pool.query(
-        "INSERT INTO users (name, uid, password) VALUES ($1, $2, $3)",
+        "INSERT INTO users (name, uid, password_hash) VALUES ($1, $2, $3)",
         [name, uid, hashedPassword]
     );
     
@@ -65,7 +65,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: "Invalid UID or password." });
         }
 
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        const passwordMatch = await bcrypt.compare(password, user.password_hash);
         
         if (!passwordMatch) {
             return res.status(400).json({ message: "Invalid UID or password." });
