@@ -6,20 +6,53 @@ function SignupPage() {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
-    async function handleSignup(e) {
-        e.preventDefault();
+async function handleSignup(e) {
+    e.preventDefault();
+    setMessage("");
 
-        const res = await fetch("http://localhost:3000/signup", {
+    const cleanUid = uid.trim();
+    const cleanName = name.trim();
+
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+    if (!cleanName || !cleanUid || !password) {
+        setMessage("Please fill in all fields.");
+        return;
+    }
+
+    if (!/^\d{9}$/.test(cleanUid)) {
+        setMessage("UID must be exactly 9 digits.");
+        return;
+    }
+
+    if (!passwordRegex.test(password)) {
+        setMessage(
+            "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+        );
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/auth/signup", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name, uid, password }),
+            body: JSON.stringify({
+                name: cleanName,
+                uid: cleanUid,
+                password,
+            }),
         });
 
         const data = await res.json();
-        setMessage(data.message);
+        setMessage(data.message || "Signup finished.");
+
+    } catch (error) {
+        setMessage("Could not connect to server.");
     }
+}
 
     return (
         <form onSubmit={handleSignup}>

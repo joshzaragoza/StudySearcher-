@@ -16,6 +16,13 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({message: "UID must be exactly 9 digits."});
         }
 
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+            message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."});
+        }
+
     const existingUser = await pool.query(
         "SELECT * FROM users WHERE uid = $1",
         [uid]
@@ -25,7 +32,8 @@ router.post('/signup', async (req, res) => {
         return res.status(400).json({ message: "UID already has an existing account. Please log in instead or use a different UID." });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+//THIS PART HASHES THE PASSWORD BEFORE STORING IT IN THE DATABASE AKA DATABASE WONT HAVE ORIGINAL
+    const hashedPassword = await bcrypt.hash(password, 10); 
 
     //creating new user
     await pool.query(
