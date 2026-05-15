@@ -9,7 +9,7 @@ function LoginPage() {
         e.preventDefault();
 
         try{
-            const res = await fetch("http://localhost:3000/login", {
+            const res = await fetch("http://localhost:3000/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -21,9 +21,8 @@ function LoginPage() {
             setMessage(data.message);
 
             if (res.ok) {
-                localStorage.setItem("loggedInUser", uid);
-                // Redirect to dashboard or another page
-                // window.location.href = "/dashboard";
+                localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+                window.location.href = "/home";
             }
         } catch (error) {
             setMessage("An error occurred during login. Please try again later.");
