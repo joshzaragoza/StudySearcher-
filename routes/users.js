@@ -75,4 +75,31 @@ router.post("/:id/classes", async (req, res) => {
     }
 });
 
+router.post("/:id/availability", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { availability } = req.body;
+
+        await pool.query(
+            "DELETE FROM availability WHERE user_id = $1",
+            [userId]
+        );
+
+        for (const slot of availability) {
+            const { day_of_week, start_time, end_time } = slot;
+            if (day_of_week && start_time && end_time) {
+                await pool.query(
+                    "INSERT INTO availability (user_id, day_of_week, start_time, end_time) VALUES ($1, $2, $3, $4)",
+                    [userId, day_of_week, start_time, end_time]
+                );
+            }
+        }
+
+        return res.status(200).json({ message: "Availability saved successfully." });
+    } catch (error) {
+        console.error("Error saving availability:", error);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 module.exports = router;
