@@ -73,15 +73,39 @@ function ProfilePage() {
             [day]: value
         });
     }
-    function handleSaveProfile() {
-        const profileData = {
-            user,
-            classes,
-            availability
-        };
-        localStorage.setItem("profileData", JSON.stringify(profileData));
-        alert("Profile saved!");
+    async function handleSaveProfile() {
+        try {
+            const classCodes = classes.map(c => c.name.trim().toUpperCase());
+
+            const classRes = await fetch(`http://localhost:3000/api/users/${user.id}/classes`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ classes: classCodes }),
+            });
+
+            const availabilityData = Object.entries(availability)
+                .filter(([_, value]) => value.trim() !== "")
+                .map(([day, value]) => {
+                    const [start_time, end_time] = value.split("-").map(s => s.trim());
+                    return { day_of_week: day, start_time, end_time };
+                });
+
+            const availRes = await fetch(`http://localhost:3000/api/users/${user.id}/availability`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ availability: availabilityData }),
+            });
+
+            if (classRes.ok && availRes.ok) {
+                alert("Profile saved!");
+            } else {
+                alert("Something went wrong saving your profile.");
+            }
+        } catch (error) {
+            console.error("Error saving profile:", error);
+            alert("Could not connect to server.");
         }
+    }
 
     return (
             <div>
