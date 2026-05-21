@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ProfilePage() {
     const storedUser = localStorage.getItem("loggedInUser");
@@ -25,6 +25,28 @@ function ProfilePage() {
         saturday: "",
         sunday: "",
     });
+
+    useEffect(() => {
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`http://localhost:3000/api/users/${user.id}/profile`);
+                const data = await res.json();
+
+                if (res.ok) {
+                    setClasses(data.classes.map(code => ({ name: code, professor: "" })));
+                    const availMap = {};
+                    data.availability.forEach(slot => {
+                        availMap[slot.day_of_week.toLowerCase()] = `${slot.start_time} - ${slot.end_time}`;
+                    });
+                    setAvailability(prev => ({ ...prev, ...availMap }));
+                }
+            } catch (error) {
+                console.error("Error loading profile:", error);
+            }
+        }
+
+        fetchProfile();
+    }, []);
 
     function handleAddClass() {
         if (classInput.trim() === "" || professorInput.trim() === "") {
