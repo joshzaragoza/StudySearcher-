@@ -45,4 +45,34 @@ router.get("/:id/profile", async (req, res) => {
     }
 });
 
+router.post("/:id/classes", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { classes } = req.body;
+
+        await pool.query(
+            "DELETE FROM user_classes WHERE user_id = $1",
+            [userId]
+        );
+
+        for (const code of classes) {
+            const classResult = await pool.query(
+                "INSERT INTO classes (code) VALUES ($1) ON CONFLICT (code) DO UPDATE SET code = EXCLUDED.code RETURNING id",
+                [code]
+            );
+            const classId = classResult.rows[0].id;
+
+            await pool.query(
+                "INSERT INTO user_classes (user_id, class_id) VALUES ($1, $2)",
+                [userId, classId]
+            );
+        }
+
+        return res.status(200).json({ message: "Classes saved successfully." });
+    } catch (error) {
+        console.error("Error saving classes:", error);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 module.exports = router;
