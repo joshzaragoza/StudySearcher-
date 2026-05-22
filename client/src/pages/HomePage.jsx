@@ -15,6 +15,9 @@ function HomePage() {
             <h1>Welcome to StudySearcher!</h1>
             <h2>Welcome{user?.name ? `, ${user.name}` : ""}!</h2>
             <p>Find study partners based on your classes and availability below!</p>
+            <button onClick={() => window.location.href = "/matches"}>
+                Find Matches
+            </button>
         </div>
     );
 }
