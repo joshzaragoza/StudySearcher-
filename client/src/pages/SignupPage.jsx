@@ -80,6 +80,15 @@ async function handleSignup(e) {
             <button type="submit">Sign Up</button>
 
             <p>{message}</p>
+
+            
+      <p>
+        Already have an account? {""}
+        <span  style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }} onClick={() => {window.location.href = "/login"}}>
+            Log In
+        </span>
+      </p>
+      
         </form>
     );
 }

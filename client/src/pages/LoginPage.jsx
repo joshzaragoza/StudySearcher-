@@ -49,6 +49,14 @@ function LoginPage() {
       <button type="submit">Log In</button>
 
       <p>{message}</p>
+
+      <p>
+        Don't have an account? {""}
+        <span  style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }} onClick={() => {window.location.href = "/signup"}}>
+            Sign Up
+        </span>
+      </p>
+      
     </form>
      );
     }
