@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import "../styles/Auth.css";
 
 function SignupPage() {
     const [uid, setUid] = useState("");
@@ -54,33 +55,54 @@ async function handleSignup(e) {
     }
 }
 
-    return (
-        <form onSubmit={handleSignup}>
-            <h1>Sign Up</h1>
+return (
+        <div className="auth-container">
+            <form className="auth-box" onSubmit={handleSignup}>
 
-            <input
-                placeholder="UID"
-                value={uid}
-                onChange={(e) => setUid(e.target.value)}
-            />
+                <h1>Sign Up</h1>
 
-            <input
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
+                <input
+                    placeholder="UID"
+                    value={uid}
+                    onChange={(e) => {
+                        setUid(e.target.value);
+                        setMessage("");
+                    }}
+                />
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                <input
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => {
+                        setName(e.target.value);
+                        setMessage("");
+                    }}
+                />
 
-            <button type="submit">Sign Up</button>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        setMessage("");
+                    }}
+                />
 
-            <p>{message}</p>
-        </form>
+                <button type="submit">Sign Up</button>
+
+                <p>{message}</p>
+
+                <p
+                    className="auth-link"
+                    onClick={() => {
+                        window.location.href = "/login";
+                    }}
+                >
+                    Already have an account? Log In
+                </p>
+            </form>
+        </div>
     );
 }
 

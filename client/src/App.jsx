@@ -9,12 +9,6 @@ import ProfilePage from "./pages/ProfilePage";
 function App() {
   return (
     <BrowserRouter>
-      <nav>
-        <Link to="/signup">Sign Up</Link>
-        {" | "}
-        <Link to="/login">Log In</Link>
-      </nav>
-
       <Routes>
         <Route path="/" element={<Navigate to="/signup" />} />
         <Route path="/signup" element={<SignupPage />} />
