@@ -17,10 +17,11 @@ router.get("/:id/profile", async (req, res) => {
 
         const classesResult = await pool.query(
             `
-            SELECT classes.code
+            SELECT classes.code, user_classes.professor
             FROM classes
             JOIN user_classes ON classes.id = user_classes.class_id
             WHERE user_classes.user_id = $1
+            ORDER BY classes.code
             `,
             [userId]
         );
@@ -36,7 +37,7 @@ router.get("/:id/profile", async (req, res) => {
 
         res.json({
             user: userResult.rows[0],
-            classes: classesResult.rows.map(row => row.code),
+            classes: classesResult.rows,
             availability: availability.rows
         });
     } catch (error) {
