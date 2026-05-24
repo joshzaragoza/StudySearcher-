@@ -4,18 +4,27 @@ function HomePage() {
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
 
     return (
-        <div>
-            <div style={{ display: "flex", justifyContent: "flex-end"}}>
-                <button onClick={() => {
-                    window.location.href = "/profile";}}>
+        <div className="home-container">
+            <div className="home-topbar">
+                <button 
+                    className="btn btn--ghost"
+                    onClick={() => {
+                        window.location.href = "/profile";
+                    }
+                }>
                     Profile
                 </button>
             </div>
-
-            <h1>Welcome to StudySearcher!</h1>
-            <h2>Welcome{user?.name ? `, ${user.name}` : ""}!</h2>
-            <p>Find study partners based on your classes and availability below!</p>
-            <button onClick={() => window.location.href = "/matches"}>
+            
+            <div className="home-hero">
+                <p className="home-hero__eyebrow">Welcome to StudySearcher!</p>
+                <h2>Welcome{user?.name ? `, ${user.name}` : ""}!</h2>
+                <p>Find study partners based on your classes and availability below!</p>
+            </div>
+            <button 
+                className="btn btn--primary"
+                onClick={() => window.location.href = "/matches" 
+            }>
                 Find Matches
             </button>
         </div>
