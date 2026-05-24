@@ -190,39 +190,60 @@ function ProfilePage() {
     }
 
     return (
-            <div>
-            <h1>User Profile</h1>
-            <p>Name: {user?.name|| "Not available yet"} </p>
-            <p>UID: {user?.uid || "Not available yet"}</p>
+        <div className="profile-container">
 
+            {/* Header */}
+            <div className="profile-header">
+                <h1>User Profile</h1>
+                <div className="profile-meta">
+                    <p><strong>Name:</strong> {user?.name|| "Not available yet"} </p>
+                    <p><strong>UID:</strong> {user?.uid || "Not available yet"}</p>
+                </div>
+            </div>
+            
+            {/* Error Message */}
             {error && <p style={{ color: "red" }}>{error}</p>}
 
-            <h2>Current Classes</h2>
-            <input
-                type="text"
-                placeholder="Enter class name"
-                value={classInput}
-                onChange={(e) => setClassInput(e.target.value)}
-                />
-            <input 
-                type="text"
-                placeholder="Enter professor name"
-                value={professorInput}
-                onChange={(e) => setProfessorInput(e.target.value)}
-                />
-            <button onClick={handleAddClass}>Add Class</button>
-            
-            <ul>
-                {classes.map((c, i) => (
-                    /* Debugging backend/frontend? bug Daniil */
-                    console.log(c),
-                    <li key={i}>{c.name} - {c.professor}
-                    <button onClick={() => handleRemoveClass(i)}>
-                        Remove
+            {/* Classes Section */}
+            <div className="profile-section">
+                <div className="class-input-row">
+                    <h2>Current Classes</h2>
+                    <input
+                        type="text"
+                        placeholder="Enter class name"
+                        value={classInput}
+                        onChange={(e) => setClassInput(e.target.value)}
+                        />
+                    <input 
+                        type="text"
+                        placeholder="Enter professor name"
+                        value={professorInput}
+                        onChange={(e) => setProfessorInput(e.target.value)}
+                        />
+                    <button 
+                        className="btn btn--primary"
+                        onClick={handleAddClass}
+                    >
+                        Add Class
                     </button>
-                    </li>
-                ))}
-            </ul>
+                </div>
+
+                <ul>
+                    {classes.map((c, i) => (
+                        /* Debugging backend/frontend? bug Daniil */
+                        console.log(c),
+                        <li key={i}>{c.name} - {c.professor}
+                            <button 
+                                className="btn btn--danger btn--sm"
+                                onClick={() => handleRemoveClass(i)}
+                            >
+                                Remove
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        
 
             <h2>Weekly Availability</h2>
             {Object.keys(availability).map((day) => (
@@ -247,7 +268,7 @@ function ProfilePage() {
                         }
                     />
                 </div>
-             ))}
+            ))}
 
             <button onClick={handleSaveProfile}>Save Profile</button>
 
@@ -265,7 +286,6 @@ function ProfilePage() {
                 window.location.href = "/login";}}>
                 Log Out
             </button>
-
         </div>
     );
 }
