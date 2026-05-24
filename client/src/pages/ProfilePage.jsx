@@ -17,13 +17,13 @@ function ProfilePage() {
     const [classes, setClasses] = useState([]);
     const [error, setError] = useState("");
     const [availability, setAvailability] = useState({
-        monday: "",
-        tuesday: "",
-        wednesday: "",
-        thursday: "",
-        friday: "",
-        saturday: "",
-        sunday: "",
+        monday: { start_time: "", end_time: "" },
+        tuesday: { start_time: "", end_time: "" },
+        wednesday: { start_time: "", end_time: "" },
+        thursday: { start_time: "", end_time: "" },
+        friday: { start_time: "", end_time: "" },
+        saturday: { start_time: "", end_time: "" },
+        sunday: { start_time: "", end_time: "" },
     });
 
     useEffect(() => {
@@ -41,7 +41,12 @@ function ProfilePage() {
                     );
                     const availMap = {};
                     data.availability.forEach(slot => {
-                        availMap[slot.day_of_week.toLowerCase()] = `${slot.start_time} - ${slot.end_time}`;
+                        const day = slot.day_of_week.toLowerCase();
+
+                        availMap[day] = {
+                            start_time: slot.start_time.slice(0, 5),
+                            end_time: slot.end_time.slice(0, 5),
+                        };
                     });
                     setAvailability(prev => ({ ...prev, ...availMap }));
                 }
@@ -90,13 +95,55 @@ function ProfilePage() {
         setClasses(classes.filter((_, index) => index !== indexToRemove));  
     }
 
-    function handleAvailabilityChange(day, value) {
+    function handleAvailabilityChange(day, field, value) {
         setAvailability({
             ...availability,
-            [day]: value
+            [day]: {
+                ...availability[day],
+                [field]: value,
+            },
         });
     }
     async function handleSaveProfile() {
+
+        function validateProfile() {
+            if (classes.length === 0) {
+                setError("Add at least one class before saving.");
+                return false;
+            }
+
+            const hasAvailability = Object.values(availability).some(
+                (slot) => slot.start_time && slot.end_time
+            );
+
+            if (!hasAvailability) {
+                setError("Add at least one availability time before saving.");
+                return false;
+            }
+
+            for (const [day, slot] of Object.entries(availability)) {
+                const hasStart = slot.start_time !== "";
+                const hasEnd = slot.end_time !== "";
+
+                if ((hasStart && !hasEnd) || (!hasStart && hasEnd)) {
+                    setError(`Please complete both start and end time for ${day}.`);
+                    return false;
+                }
+
+                if (hasStart && hasEnd && slot.start_time >= slot.end_time) {
+                    setError(`Start time must be before end time for ${day}.`);
+                    return false;
+                }
+            }
+
+            setError("");
+            return true;
+        }
+
+        if (!validateProfile()) {
+            return;
+        }
+
         try {
             const classData = classes.map((c) => ({
                 code: c.name.trim().toUpperCase(),
@@ -110,11 +157,12 @@ function ProfilePage() {
             });
 
             const availabilityData = Object.entries(availability)
-                .filter(([_, value]) => value.trim() !== "")
-                .map(([day, value]) => {
-                    const [start_time, end_time] = value.split("-").map(s => s.trim());
-                    return { day_of_week: day, start_time, end_time };
-                });
+                .filter(([_, slot]) => slot.start_time && slot.end_time)
+                .map(([day, slot]) => ({
+                    day_of_week: day,
+                    start_time: slot.start_time,
+                    end_time: slot.end_time,
+            }));
 
             const availRes = await fetch(`http://localhost:3000/api/users/${user.id}/availability`, {
                 method: "POST",
@@ -147,6 +195,8 @@ function ProfilePage() {
             <p>Name: {user?.name|| "Not available yet"} </p>
             <p>UID: {user?.uid || "Not available yet"}</p>
 
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
             <h2>Current Classes</h2>
             <input
                 type="text"
@@ -161,7 +211,7 @@ function ProfilePage() {
                 onChange={(e) => setProfessorInput(e.target.value)}
                 />
             <button onClick={handleAddClass}>Add Class</button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            
             <ul>
                 {classes.map((c, i) => (
                     <li key={i}>{c.name} - {c.professor}
@@ -175,15 +225,25 @@ function ProfilePage() {
             <h2>Weekly Availability</h2>
             {Object.keys(availability).map((day) => (
                 <div key={day}>
-                <label>
-                    {day.charAt(0).toUpperCase() + day.slice(1)}
-                </label>
-                <input 
-                type ="text"
-                placeholder="Example: 3PM - 5PM" 
-                value={availability[day]}
-                onChange={(e) => handleAvailabilityChange(day, e.target.value)}
-                />
+                    <label>
+                        {day.charAt(0).toUpperCase() + day.slice(1)}
+                    </label>
+
+                    <input
+                        type="time"
+                        value={availability[day].start_time}
+                        onChange={(e) =>
+                            handleAvailabilityChange(day, "start_time", e.target.value)
+                        }
+                    />
+
+                    <input
+                        type="time"
+                        value={availability[day].end_time}
+                        onChange={(e) =>
+                            handleAvailabilityChange(day, "end_time", e.target.value)
+                        }
+                    />
                 </div>
              ))}
 
