@@ -33,7 +33,12 @@ function ProfilePage() {
                 const data = await res.json();
 
                 if (res.ok) {
-                    setClasses(data.classes.map(code => ({ name: code, professor: "" })));
+                    setClasses(
+                        data.classes.map((c) => ({
+                            name: c.code,
+                            professor: c.professor || "",
+                        }))
+                    );
                     const availMap = {};
                     data.availability.forEach(slot => {
                         availMap[slot.day_of_week.toLowerCase()] = `${slot.start_time} - ${slot.end_time}`;
@@ -75,12 +80,15 @@ function ProfilePage() {
     }
     async function handleSaveProfile() {
         try {
-            const classCodes = classes.map(c => c.name.trim().toUpperCase());
+            const classData = classes.map((c) => ({
+                code: c.name.trim().toUpperCase(),
+                professor: c.professor.trim(),
+            }));
 
             const classRes = await fetch(`http://localhost:3000/api/users/${user.id}/classes`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ classes: classCodes }),
+                body: JSON.stringify({ classes: classData }),
             });
 
             const availabilityData = Object.entries(availability)
