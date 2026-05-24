@@ -54,11 +54,29 @@ function ProfilePage() {
     }, []);
 
     function handleAddClass() {
-        if (classInput.trim() === "" || professorInput.trim() === "") {
-            setError("Please fill in all fields.");
-            return;
+        const cleanClass = normalizeClassCode(classInput);
+        const cleanProfessor = professorInput.trim();
 
+
+        if (!cleanClass || !cleanProfessor) {
+            setError("Please enter both a class and professor.");
+            return;
         }
+
+        if (!isValidClassCode(cleanClass)) {
+            setError("Class should look like CS 35L, MATH 33A, or PIC 10A.");
+            return;
+        }
+        
+        const alreadyAdded = classes.some(
+            (c) => normalizeClassCode(c.name) === cleanClass
+        );
+
+        if (alreadyAdded) {
+            setError("You already added this class.");
+            return;
+        }
+
         setClasses([
             ...classes,
             { name: classInput.trim(), professor: professorInput.trim() }
@@ -113,6 +131,14 @@ function ProfilePage() {
             console.error("Error saving profile:", error);
             alert("Could not connect to server.");
         }
+    }
+
+    function normalizeClassCode(input) {
+        return input.trim().toUpperCase().replace(/\s+/g, " ");
+    }
+
+    function isValidClassCode(code) {
+        return /^[A-Z]{2,6}\s?\d{1,4}[A-Z]{0,2}$/.test(code);
     }
 
     return (
