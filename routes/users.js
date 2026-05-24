@@ -51,12 +51,25 @@ router.post("/:id/classes", async (req, res) => {
         const userId = req.params.id;
         const { classes } = req.body;
 
+        if (!Array.isArray(classes)) {
+            return res.status(400).json({ message: "Classes must be an array." });
+        }
+
         await pool.query(
             "DELETE FROM user_classes WHERE user_id = $1",
             [userId]
         );
 
-        for (const code of classes) {
+        for (const item of classes) {
+            const code = item.code ? item.code.trim().toUpperCase() : undefined;
+            const professor = item.professor ? item.professor.trim() : undefined;
+
+            if (!code || !professor) {
+                return res.status(400).json({
+                    message: "Each class must include a code and professor."
+                });
+            }
+
             const classResult = await pool.query(
                 "INSERT INTO classes (code) VALUES ($1) ON CONFLICT (code) DO UPDATE SET code = EXCLUDED.code RETURNING id",
                 [code]
@@ -64,8 +77,8 @@ router.post("/:id/classes", async (req, res) => {
             const classId = classResult.rows[0].id;
 
             await pool.query(
-                "INSERT INTO user_classes (user_id, class_id) VALUES ($1, $2)",
-                [userId, classId]
+                "INSERT INTO user_classes (user_id, class_id, professor) VALUES ($1, $2, $3)",
+                [userId, classId, professor]
             );
         }
 
@@ -85,6 +98,10 @@ router.post("/:id/availability", async (req, res) => {
             "DELETE FROM availability WHERE user_id = $1",
             [userId]
         );
+
+        if (!Array.isArray(availability)) {
+            return res.status(400).json({ message: "Availability must be an array." });
+        }
 
         for (const slot of availability) {
             const { day_of_week, start_time, end_time } = slot;
