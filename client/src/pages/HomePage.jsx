@@ -1,5 +1,3 @@
-import ProfilePage from "./ProfilePage";
-
 function HomePage() {
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
 
@@ -20,13 +18,14 @@ function HomePage() {
                 <p className="home-hero__eyebrow">Welcome to StudySearcher!</p>
                 <h2>Welcome{user?.name ? `, ${user.name}` : ""}!</h2>
                 <p>Find study partners based on your classes and availability below!</p>
+                <button 
+                    className="btn btn--primary"
+                    onClick={() => window.location.href = "/matches" 
+                }>
+                    Find Matches
+                </button>
             </div>
-            <button 
-                className="btn btn--primary"
-                onClick={() => window.location.href = "/matches" 
-            }>
-                Find Matches
-            </button>
+            
         </div>
     );
 }
