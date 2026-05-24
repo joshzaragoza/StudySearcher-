@@ -214,6 +214,7 @@ function ProfilePage() {
             
             <ul>
                 {classes.map((c, i) => (
+                    /* Debugging backend/frontend? bug Daniil */
                     console.log(c),
                     <li key={i}>{c.name} - {c.professor}
                     <button onClick={() => handleRemoveClass(i)}>
