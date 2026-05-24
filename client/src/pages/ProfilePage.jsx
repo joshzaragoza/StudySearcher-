@@ -84,7 +84,7 @@ function ProfilePage() {
 
         setClasses([
             ...classes,
-            { name: classInput.trim(), professor: professorInput.trim() }
+            { name: cleanClass, professor: cleanProfessor }
 
         ]);
         setClassInput("");
@@ -104,42 +104,42 @@ function ProfilePage() {
             },
         });
     }
-    async function handleSaveProfile() {
 
-        function validateProfile() {
-            if (classes.length === 0) {
-                setError("Add at least one class before saving.");
-                return false;
-            }
-
-            const hasAvailability = Object.values(availability).some(
-                (slot) => slot.start_time && slot.end_time
-            );
-
-            if (!hasAvailability) {
-                setError("Add at least one availability time before saving.");
-                return false;
-            }
-
-            for (const [day, slot] of Object.entries(availability)) {
-                const hasStart = slot.start_time !== "";
-                const hasEnd = slot.end_time !== "";
-
-                if ((hasStart && !hasEnd) || (!hasStart && hasEnd)) {
-                    setError(`Please complete both start and end time for ${day}.`);
-                    return false;
-                }
-
-                if (hasStart && hasEnd && slot.start_time >= slot.end_time) {
-                    setError(`Start time must be before end time for ${day}.`);
-                    return false;
-                }
-            }
-
-            setError("");
-            return true;
+    function validateProfile() {
+        if (classes.length === 0) {
+            setError("Add at least one class before saving.");
+            return false;
         }
 
+        const hasAvailability = Object.values(availability).some(
+            (slot) => slot.start_time && slot.end_time
+        );
+
+        if (!hasAvailability) {
+            setError("Add at least one availability time before saving.");
+            return false;
+        }
+
+        for (const [day, slot] of Object.entries(availability)) {
+            const hasStart = slot.start_time !== "";
+            const hasEnd = slot.end_time !== "";
+
+            if ((hasStart && !hasEnd) || (!hasStart && hasEnd)) {
+                setError(`Please complete both start and end time for ${day}.`);
+                return false;
+            }
+
+            if (hasStart && hasEnd && slot.start_time >= slot.end_time) {
+                setError(`Start time must be before end time for ${day}.`);
+                return false;
+            }
+        }
+
+        setError("");
+        return true;
+    }
+
+    async function handleSaveProfile() {
         if (!validateProfile()) {
             return;
         }
@@ -214,6 +214,7 @@ function ProfilePage() {
             
             <ul>
                 {classes.map((c, i) => (
+                    console.log(c),
                     <li key={i}>{c.name} - {c.professor}
                     <button onClick={() => handleRemoveClass(i)}>
                         Remove
