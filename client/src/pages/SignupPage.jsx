@@ -89,9 +89,9 @@ return (
                     }}
                 />
 
-                <button type="submit">Sign Up</button>
+                <button type="submit" className="btn btn--primary">Sign Up</button>
 
-                <p>{message}</p>
+                {message && <p className="text-error">{message}</p>}
 
                 <p
                     className="auth-link"
