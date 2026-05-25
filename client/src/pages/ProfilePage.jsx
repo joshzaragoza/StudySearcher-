@@ -190,82 +190,119 @@ function ProfilePage() {
     }
 
     return (
-            <div>
-            <h1>User Profile</h1>
-            <p>Name: {user?.name|| "Not available yet"} </p>
-            <p>UID: {user?.uid || "Not available yet"}</p>
+        <div className="profile-container">
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
-
-            <h2>Current Classes</h2>
-            <input
-                type="text"
-                placeholder="Enter class name"
-                value={classInput}
-                onChange={(e) => setClassInput(e.target.value)}
-                />
-            <input 
-                type="text"
-                placeholder="Enter professor name"
-                value={professorInput}
-                onChange={(e) => setProfessorInput(e.target.value)}
-                />
-            <button onClick={handleAddClass}>Add Class</button>
-            
-            <ul>
-                {classes.map((c, i) => (
-                    /* Debugging backend/frontend? bug Daniil */
-                    console.log(c),
-                    <li key={i}>{c.name} - {c.professor}
-                    <button onClick={() => handleRemoveClass(i)}>
-                        Remove
-                    </button>
-                    </li>
-                ))}
-            </ul>
-
-            <h2>Weekly Availability</h2>
-            {Object.keys(availability).map((day) => (
-                <div key={day}>
-                    <label>
-                        {day.charAt(0).toUpperCase() + day.slice(1)}
-                    </label>
-
-                    <input
-                        type="time"
-                        value={availability[day].start_time}
-                        onChange={(e) =>
-                            handleAvailabilityChange(day, "start_time", e.target.value)
-                        }
-                    />
-
-                    <input
-                        type="time"
-                        value={availability[day].end_time}
-                        onChange={(e) =>
-                            handleAvailabilityChange(day, "end_time", e.target.value)
-                        }
-                    />
+            {/* Header */}
+            <div className="profile-header">
+                <h1>User Profile</h1>
+                <div className="profile-details">
+                    <p>Name: {user?.name|| "Not available yet"} </p>
+                    <p>UID: {user?.uid || "Not available yet"}</p>
                 </div>
-             ))}
+            </div>
+           
+            {/* Error Message */}
+            {error && <p className="error-msg">{error}</p>}
 
-            <button onClick={handleSaveProfile}>Save Profile</button>
+            {/* Classes Section */}
+            <div className="profile-classes">
 
-            <br /><br />
+                <div className="class-input-container">
+                    <h2>Current Classes</h2>
+                    <input
+                        type="text"
+                        placeholder="Enter class name"
+                        value={classInput}
+                        onChange={(e) => setClassInput(e.target.value)}
+                        />
+                    <input 
+                        type="text"
+                        placeholder="Enter professor name"
+                        value={professorInput}
+                        onChange={(e) => setProfessorInput(e.target.value)}
+                        />
+                    <button
+                        className="btn btn--primary" 
+                        onClick={handleAddClass}>
+                            Add Class
+                    </button>
+                </div>
+                
+                
 
+                <ul className="class-list">
+                    {classes.map((c, i) => (
+                        /* Debugging backend/frontend? bug Daniil */
+                        console.log(c),
+                        <li key={i}>
+                            <div className="class-info">
+                                <span className="class-name">{c.name}</span>
+                                <span className="class-professor">{c.professor}</span>
+                            </div>
+                            <button 
+                                className="btn btn--danger" 
+                                onClick={() => handleRemoveClass(i)}>
+                                Remove
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            
+            
+            {/* Availability Section */}
+            <div className="profile-availability">
+                <h2>Weekly Availability</h2>
+                <div className="availability-grid">
+                    {Object.keys(availability).map((day) => (
+                        <div key={day} className="availability-row">
+                            <label>
+                                {day.charAt(0).toUpperCase() + day.slice(1)}
+                            </label>
 
-            <button
+                            <input
+                                type="time"
+                                value={availability[day].start_time}
+                                onChange={(e) =>
+                                    handleAvailabilityChange(day, "start_time", e.target.value)
+                                }
+                            />
+
+                            <input
+                                type="time"
+                                value={availability[day].end_time}
+                                onChange={(e) =>
+                                    handleAvailabilityChange(day, "end_time", e.target.value)
+                                }
+                            />
+                        </div>
+                    ))}
+                </div>
+                
+            </div>
+            
+            {/* Save and Navigation Buttons */}
+            <div className="profile-actions">
+                <button 
+                    className="btn btn--primary"
+                    onClick={handleSaveProfile}>
+                    Save Profile
+                    </button>
+                <button
+                    className="btn btn--secondary"
+                    onClick={() => {
+                    window.location.href = "/home";}}>
+                    Back to Home
+                </button>
+
+                <button 
+                className="btn btn--danger"
                 onClick={() => {
-                window.location.href = "/home";}}>
-                Back to Home
-            </button>
-
-            <button onClick={() => {
-                localStorage.removeItem("loggedInUser");
-                window.location.href = "/login";}}>
-                Log Out
-            </button>
-
+                    localStorage.removeItem("loggedInUser");
+                    window.location.href = "/login";}}>
+                    Log Out
+                </button>
+            </div>
         </div>
     );
 }

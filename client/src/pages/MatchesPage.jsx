@@ -52,7 +52,7 @@ function MatchesPage() {
                 </ul>
             )}
 
-            <button className="btn" onClick={() => window.location.href = "/home"}>
+            <button className="btn btn--secondary" onClick={() => window.location.href = "/home"}>
                 Back to Home
             </button>
         </div>

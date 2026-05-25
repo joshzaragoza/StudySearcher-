@@ -9,7 +9,7 @@ function HomePage() {
             {/* rework later into navbar component */}
             <div className="navbar">
                 <button 
-                    className="btn"
+                    className="btn btn--secondary"
                     onClick={() => {
                         window.location.href = "/profile";}}>
                     Profile
