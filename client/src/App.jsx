@@ -46,27 +46,17 @@ function AppMain() {
             </PrivateRoute>
           }
         />
-        
+
       </Routes>
     </>
   );
 }
 
 function App() {
-  
-
   return (
     <>
-      <NavBar />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/signup" />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/matches" element={<MatchesPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-        </Routes>
+        <AppMain />
       </BrowserRouter>
     </>
   );
