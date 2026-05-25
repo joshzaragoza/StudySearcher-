@@ -6,6 +6,15 @@ function NavBar() {
                 <a href="/home" className="navbar-link">Home</a>
                 <a href="/matches" className="navbar-link">Matches</a>
                 <a href="/profile" className="navbar-link">Profile</a>
+                <button
+                    className="btn btn--danger"
+                    onClick={() => {
+                        localStorage.removeItem("loggedInUser");
+                        window.location.href = "/login";
+                    }}
+                >
+                    Logout
+                </button>
             </div>
         </nav>
     );
