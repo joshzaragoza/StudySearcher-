@@ -17,7 +17,7 @@ function HomePage() {
             </div>
             
             <div className="home-hero">
-                <p className="home-hero__welcome">Welcome to StudySearcher!</p>
+                <p className="home-hero__main">StudySearcher!</p>
                 <h2>Welcome{user?.name ? `, ${user.name}` : ""}!</h2>
                 <p>Find study partners based on your classes and availability below!</p>
                 <button 
