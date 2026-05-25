@@ -5,17 +5,6 @@ function HomePage() {
 
     return (
         <div className="home-container">
-
-            {/* rework later into navbar component */}
-            <div className="navbar">
-                <button 
-                    className="btn btn--secondary"
-                    onClick={() => {
-                        window.location.href = "/profile";}}>
-                    Profile
-                </button>
-            </div>
-            
             <div className="home-hero">
                 <p className="home-hero__main">StudySearcher!</p>
                 <h2>Welcome{user?.name ? `, ${user.name}` : ""}!</h2>
@@ -26,8 +15,7 @@ function HomePage() {
                     >
                     Find Matches
                 </button>
-            </div>
-            
+            </div>    
         </div>
     );
 }
