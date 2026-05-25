@@ -32,24 +32,27 @@ function MatchesPage() {
     }, []);
 
     return (
-        <div>
-            <h1>Study Partner Matches</h1>
-
-            {message && <p>{message}</p>}
+        <div className="matches-container">
+            <div className="matches-heaeder">
+                <h1>Study Partner Matches</h1>
+                <p>Here are your current matches based on your profile information.</p>
+            </div>
+            
+            {message && <p className="error-msg">{message}</p>}
 
             {matches.length === 0 ? (
-                <p>No matches found yet. Add classes to your profile first.</p>
+                <p className="no-matches">No matches found yet. Add classes to your profile first.</p>
             ) : (
-                <ul>
+                <ul className="matches-list">
                     {matches.map((match, index) => (
-                        <li key={index}>
+                        <li key={index} className="match-card">
                             {match.name} — Shared class: {match.shared_class}
                         </li>
                     ))}
                 </ul>
             )}
 
-            <button onClick={() => window.location.href = "/home"}>
+            <button className="btn" onClick={() => window.location.href = "/home"}>
                 Back to Home
             </button>
         </div>
