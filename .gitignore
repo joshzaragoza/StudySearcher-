@@ -56,4 +56,4 @@ Thumbs.db
 # Optional: uploads/temp files
 uploads/
 tmp/
-temp/
+temp/.env
