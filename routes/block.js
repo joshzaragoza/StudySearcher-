@@ -23,6 +23,7 @@ router.post("/", async (req, res) => {
       [blockerId, blockedId]
     );
 
+    // Find any existing conversations between the two users
     const conversations = await client.query(
       `
       SELECT c.id
@@ -38,11 +39,12 @@ router.post("/", async (req, res) => {
       [blockerId, blockedId]
     );
 
-    const conversationIds = conversations.rows.map(row => row.id);
+    const conversationIds = conversations.rows.map(row => Number(row.id));
 
+    // Delete any conversations between the two users
     if (conversationIds.length > 0) {
       await client.query(
-        "DELETE FROM conversations WHERE id = ANY($1)",
+        "DELETE FROM conversations WHERE id = ANY($1::int[])",
         [conversationIds]
       );
     }
