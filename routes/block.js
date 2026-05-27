@@ -7,10 +7,12 @@ router.post("/", async (req, res) => {
   try {
     const { blockerId, blockedId } = req.body;
 
+    // Validate input
     if (!blockerId || !blockedId) {
       return res.status(400).json({ message: "Missing blockerId or blockedId." });
     }
     
+    // Prevent users from blocking themselves
     if (Number(blockerId) === Number(blockedId)) {
       return res.status(400).json({ message: "Cannot block yourself." });
     }
