@@ -31,6 +31,36 @@ function MatchesPage() {
         fetchMatches();
     }, []);
 
+    async function openConversation(match) {
+        // debugging logs. 
+        console.log("logged in user:", user);
+        console.log("match clicked:", match);
+
+        try {
+            const res = await fetch("http://localhost:3000/api/conversations/open", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    currentUserId: user.id,
+                    otherUserId: match.id
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                // Handle successful conversation creation => redirect to chat page (TO BE COMPLETED)
+                window.location.href = `/chat/${data.conversationId}`;
+            } else {
+                setMessage(data.message || "Could not create conversation.");
+            }
+        } catch (error) {
+            setMessage("Could not connect to server.");
+        }
+    }
+
     return (
         <div className="matches-container">
             <div className="matches-heaeder">
@@ -47,6 +77,10 @@ function MatchesPage() {
                     {matches.map((match, index) => (
                         <li key={index} className="match-card">
                             {match.name} — Shared class: {match.shared_class}
+
+                            <button className="btn btn--primary" onClick={() => openConversation(match)}>
+                                Message
+                            </button>
                         </li>
                     ))}
                 </ul>

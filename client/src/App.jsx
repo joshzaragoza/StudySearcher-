@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavBar from "./components/Navbar";
+import ChatPage from "./pages/ChatPage";  
 
 function PrivateRoute({ children }) {
   const loggedInUser = localStorage.getItem("loggedInUser");
@@ -43,6 +44,15 @@ function AppMain() {
           element={
             <PrivateRoute>
               <MatchesPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chat/:conversationId"
+          element={
+            <PrivateRoute>
+              <ChatPage />
             </PrivateRoute>
           }
         />
