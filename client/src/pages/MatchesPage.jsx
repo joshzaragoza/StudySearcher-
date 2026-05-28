@@ -32,6 +32,9 @@ function MatchesPage() {
     }, []);
 
     async function openConversation(match) {
+        console.log("logged in user:", user);
+        console.log("match clicked:", match);
+
         try {
             const res = await fetch("http://localhost:3000/api/conversations/open", {
                 method: "POST",
@@ -74,7 +77,7 @@ function MatchesPage() {
                         <li key={index} className="match-card">
                             {match.name} — Shared class: {match.shared_class}
 
-                            <button className="btn btn--primary" onClick={() => openConversation(match.id)}>
+                            <button className="btn btn--primary" onClick={() => openConversation(match)}>
                                 Message
                             </button>
                         </li>

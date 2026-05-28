@@ -2,7 +2,7 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
-router.post("/open:", async (req, res) => {
+router.post("/open", async (req, res) => {
     try {
         const { currentUserId, otheruserId } = req.body;
 
