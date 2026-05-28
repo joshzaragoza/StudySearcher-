@@ -2,9 +2,9 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
-router.get("/conversationId", async (req, res) => {
+router.get("/:conversationId", async (req, res) => {
     try {
-        const { conversationId } = req.query;
+        const { conversationId } = req.params;
 
         // Validate conversationId
         if (!conversationId) {
