@@ -7,6 +7,7 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [body, setBody] = useState("");
   const [message, setMessage] = useState("");
+  const [otherUser, setOtherUser] = useState(null);
 
   // get conversation ID from URL and user info from local storage
   const storedUser = localStorage.getItem("loggedInUser");
