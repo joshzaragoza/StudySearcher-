@@ -22,6 +22,14 @@ router.get("/:id", async (req, res) => {
                 WHERE user_id = $1
             )
             AND users.id != $1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM blocked_users
+                WHERE 
+                    (blocker_id = $1 AND blocked_id = users.id)
+                    OR
+                    (blocker_id = users.id AND blocked_id = $1)
+            )
             `,
             [userId]
         );
