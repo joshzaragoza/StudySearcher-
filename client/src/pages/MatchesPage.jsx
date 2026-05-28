@@ -31,25 +31,62 @@ function MatchesPage() {
         fetchMatches();
     }, []);
 
-    return (
-        <div>
-            <h1>Study Partner Matches</h1>
+    async function openConversation(match) {
+        // debugging logs. 
+        console.log("logged in user:", user);
+        console.log("match clicked:", match);
 
-            {message && <p>{message}</p>}
+        try {
+            const res = await fetch("http://localhost:3000/api/conversations/open", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    currentUserId: user.id,
+                    otherUserId: match.id
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                // Handle successful conversation creation => redirect to chat page (TO BE COMPLETED)
+                window.location.href = `/chat/${data.conversationId}`;
+            } else {
+                setMessage(data.message || "Could not create conversation.");
+            }
+        } catch (error) {
+            setMessage("Could not connect to server.");
+        }
+    }
+
+    return (
+        <div className="matches-container">
+            <div className="matches-heaeder">
+                <h1>Study Partner Matches</h1>
+                <p>Here are your current matches based on your profile information.</p>
+            </div>
+            
+            {message && <p className="error-msg">{message}</p>}
 
             {matches.length === 0 ? (
-                <p>No matches found yet. Add classes to your profile first.</p>
+                <p className="no-matches">No matches found yet. Add classes to your profile first.</p>
             ) : (
-                <ul>
+                <ul className="matches-list">
                     {matches.map((match, index) => (
-                        <li key={index}>
+                        <li key={index} className="match-card">
                             {match.name} — Shared class: {match.shared_class}
+
+                            <button className="btn btn--primary" onClick={() => openConversation(match)}>
+                                Message
+                            </button>
                         </li>
                     ))}
                 </ul>
             )}
 
-            <button onClick={() => window.location.href = "/home"}>
+            <button className="btn btn--secondary" onClick={() => window.location.href = "/home"}>
                 Back to Home
             </button>
         </div>
