@@ -18,6 +18,9 @@ function HomePage() {
             <button onClick={() => window.location.href = "/matches"}>
                 Find Matches
             </button>
+            <button onClick={() => window.location.href = "/lost-found"}>
+                Lost & Found
+            </button>
         </div>
     );
 }

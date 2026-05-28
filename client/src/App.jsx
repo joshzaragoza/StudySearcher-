@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
+import LostFoundPage from "./pages/LostFoundPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/matches" element={<MatchesPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/lost-found" element={<LostFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
