@@ -21,7 +21,7 @@ router.post("/open", async (req, res) => {
             From blocked_users
             WHERE (blocker_id = $1 AND blocked_id = $2) OR (blocker_id = $2 AND blocked_id = $1)
             `,
-            [currentUserId, otheruserId]
+            [currentUserId, otherUserId]
         );
 
         if (blockCheck.rows.length > 0) {
