@@ -39,12 +39,12 @@ function ChatPage() {
     socket.emit("join_conversation", { conversationId, userId: user.id });
 
     // Listen for new messages being sent in this conversation and update the message list when they arrive
-    socket.on("receive_message", (newMessage) => {
+    socket.on("new_message", (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     return () => {
-      socket.off("receive_message");
+      socket.off("new_message");
     };
   }, [conversationId, user?.id]);
 
