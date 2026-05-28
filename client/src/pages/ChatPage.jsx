@@ -39,12 +39,12 @@ function ChatPage() {
     socket.emit("join_conversation", { conversationId, userId: user.id });
 
     // Listen for new messages being sent in this conversation and update the message list when they arrive
-    socket.on("new_message", (newMessage) => {
+    socket.on("receive_message", (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     return () => {
-      socket.off("new_message");
+      socket.off("receive_message");
     };
   }, [conversationId, user?.id]);
 
@@ -54,18 +54,15 @@ function ChatPage() {
       return;
     }
 
-    try {
-      // Send the data to server. Sends conversation ID, sender ID, and message body.
-      // The server will save the message to the database and then broadcast it to all users in the conversation room (including the sender, which will trigger the "new_message" listener above to update the message list in real time)
-      await socket.emit("send_message", {
-        conversationId,
-        senderId: user.id,
-        body,
-      });
-      setBody("");
-    } catch (error) {
-      setMessage("Could not send message. Please try again.");
-    }
+    // Send the data to server. Sends conversation ID, sender ID, and message body.
+    // The server will save the message to the database and then broadcast it to all users in the conversation room (including the sender, which will trigger the "new_message" listener above to update the message list in real time)
+    socket.emit("send_message", {
+      conversationId,
+      senderId: user.id,
+      body,
+    });
+    setBody("");
+    setMessage("");
   }
 
   return (
