@@ -125,6 +125,10 @@ function ChatPage() {
     }
   }
 
+  if (!user) {
+    return <p>Please log in first.</p>;
+  }
+
   return (
     <div className="chat-container">
       <h1>Private Chat</h1>
