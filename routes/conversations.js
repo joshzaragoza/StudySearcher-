@@ -115,7 +115,7 @@ router.get("/:conversationId/other/:userId", async (req, res) => {
             return res.status(404).json({ message: "Other user not found." });
         }
 
-        return res.json(otherUserResult.rows[0]);
+        return res.json({ otherUser: otherUserResult.rows[0] });
     } catch (error) {
         console.error("Error fetching other user:", error);
         res.status(500).json({ message: "Server error." });
