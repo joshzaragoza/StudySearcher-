@@ -33,7 +33,27 @@ function ChatPage() {
         setMessage(data.message || "Could not load messages.");
       }
     }
+    
+    // Fetch info for the other user in the conversation to display their name in the chat header (TO BE IMPLEMENTED)
+    async function fetchOtherUser() {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/conversations/${conversationId}/other/${user.id}`
+        );
 
+        const data = await res.json();
+
+        if (res.ok) {
+          setOtherUser(data.otherUser);
+        } else {
+          setMessage(data.message || "Could not load chat user.");
+        }
+      } catch (error) {
+        setMessage("Could not connect to server.");
+      }
+    }
+
+    fetchOtherUser();
     fetchMessages();
 
     // Join the Socket.IO room for this conversation 
@@ -70,9 +90,53 @@ function ChatPage() {
     setMessage("");
   }
 
+  async function blockUser() {
+    if (!otherUser?.id) {
+      setMessage("Could not find the user to block.");
+      return;
+    }
+
+    const confirmBlock = window.confirm(
+      `Are you sure you want to block ${otherUser.name}? This will remove the chat history.`
+    );
+
+    if (!confirmBlock) {
+      return;
+    }
+
+    const res = await fetch("http://localhost:3000/api/block", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        blockerId: user.id,
+        blockedId: otherUser.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("User blocked.");
+      window.location.href = "/matches"; // use /messages later once that page exists
+    } else {
+      setMessage(data.message || "Could not block user.");
+    }
+  }
+
   return (
     <div className="chat-container">
       <h1>Private Chat</h1>
+
+      {otherUser && (
+        <div className="chat-header">
+          <h2>Chat with {otherUser.name}</h2>
+          <button type="button" className="btn btn--danger" onClick={blockUser}>
+            Block User
+          </button>
+        </div>
+      )}
 
       {message && <p>{message}</p>}
 
