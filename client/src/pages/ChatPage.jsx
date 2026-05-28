@@ -7,6 +7,7 @@ function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [body, setBody] = useState("");
   const [message, setMessage] = useState("");
+  const [otherUser, setOtherUser] = useState(null);
 
   // get conversation ID from URL and user info from local storage
   const storedUser = localStorage.getItem("loggedInUser");
@@ -32,7 +33,27 @@ function ChatPage() {
         setMessage(data.message || "Could not load messages.");
       }
     }
+    
+    // Fetch info for the other user in the conversation to display their name in the chat header (TO BE IMPLEMENTED)
+    async function fetchOtherUser() {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/conversations/${conversationId}/other/${user.id}`
+        );
 
+        const data = await res.json();
+
+        if (res.ok) {
+          setOtherUser(data.otherUser);
+        } else {
+          setMessage(data.message || "Could not load chat user.");
+        }
+      } catch (error) {
+        setMessage("Could not connect to server.");
+      }
+    }
+
+    fetchOtherUser();
     fetchMessages();
 
     // Join the Socket.IO room for this conversation 
@@ -40,7 +61,9 @@ function ChatPage() {
 
     // Listen for new messages being sent in this conversation and update the message list when they arrive
     socket.on("new_message", (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      if (String(newMessage.conversation_id) === String(conversationId)) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
     });
 
     return () => {
@@ -48,7 +71,9 @@ function ChatPage() {
     };
   }, [conversationId, user?.id]);
 
-  async function sendMessage() {
+  function sendMessage(e) {
+    e.preventDefault();
+    
     if (!body.trim()) {
       setMessage("Message cannot be empty.");
       return;
@@ -65,16 +90,69 @@ function ChatPage() {
     setMessage("");
   }
 
+  async function blockUser() {
+    if (!otherUser?.id) {
+      setMessage("Could not find the user to block.");
+      return;
+    }
+
+    const confirmBlock = window.confirm(
+      `Are you sure you want to block ${otherUser.name}? This will remove the chat history.`
+    );
+
+    if (!confirmBlock) {
+      return;
+    }
+
+    const res = await fetch("http://localhost:3000/api/block", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        blockerId: user.id,
+        blockedId: otherUser.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("User blocked.");
+      window.location.href = "/matches"; // use /messages later once that page exists
+    } else {
+      setMessage(data.message || "Could not block user.");
+    }
+  }
+
+  if (!user) {
+    return <p>Please log in first.</p>;
+  }
+
   return (
     <div className="chat-container">
       <h1>Private Chat</h1>
+
+      {otherUser && (
+        <div className="chat-header">
+          <h2>Chat with {otherUser.name}</h2>
+          <button type="button" className="btn btn--danger" onClick={blockUser}>
+            Block User
+          </button>
+        </div>
+      )}
 
       {message && <p>{message}</p>}
 
       <div className="messages">
         {messages.map((msg) => (
           <p key={msg.id}>
-            <strong>{msg.sender_id === user.id ? "You" : "Them"}:</strong>{" "}
+           <strong>
+              {Number(msg.sender_id) === Number(user.id)
+                ? "You"
+                : msg.sender_name || "Unknown User"}
+              :
+            </strong>{" "}
             {msg.body}
           </p>
         ))}

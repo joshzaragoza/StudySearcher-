@@ -78,4 +78,48 @@ router.post("/open", async (req, res) => {
     }
 });
 
+router.get("/:conversationId/other/:userId", async (req, res) => {
+    try {
+        const { conversationId, userId } = req.params;
+
+        // check if the user is a member of the conversation
+        const memberCheck = await pool.query(
+            `
+            SELECT 1
+            FROM conversation_members
+            WHERE conversation_id = $1 AND user_id = $2
+            `,
+            [conversationId, userId]
+        );
+
+        if (memberCheck.rows.length === 0) {
+            return res.status(403).json({ message: "User is not a member of the conversation." });
+        }
+        
+        // Get the other user's ID in the conversation
+        const otherUserResult = await pool.query(
+             `
+              SELECT users.id, users.name
+              FROM conversation_members
+              JOIN users ON conversation_members.user_id = users.id
+              JOIN conversations ON conversation_members.conversation_id = conversations.id
+              WHERE conversation_members.conversation_id = $1
+                AND conversation_members.user_id != $2
+                AND conversations.is_group = false
+              LIMIT 1
+              `,
+            [conversationId, userId]
+        );
+
+        if (otherUserResult.rows.length === 0) {
+            return res.status(404).json({ message: "Other user not found." });
+        }
+
+        return res.json({ otherUser: otherUserResult.rows[0] });
+    } catch (error) {
+        console.error("Error fetching other user:", error);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 module.exports = router;
