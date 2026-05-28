@@ -5,8 +5,9 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
+import LostFoundPage from "./pages/LostFoundPage";
 import NavBar from "./components/Navbar";
-import ChatPage from "./pages/ChatPage";  
+import ChatPage from "./pages/ChatPage";
 
 function PrivateRoute({ children }) {
   const loggedInUser = localStorage.getItem("loggedInUser");
@@ -29,7 +30,7 @@ function AppMain() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
-        
+
         <Route
           path="/profile"
           element={
@@ -57,6 +58,15 @@ function AppMain() {
           }
         />
 
+        <Route
+          path="/lost-found"
+          element={
+            <PrivateRoute>
+              <LostFoundPage />
+            </PrivateRoute>
+          }
+        />
+
       </Routes>
     </>
   );
@@ -72,4 +82,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
