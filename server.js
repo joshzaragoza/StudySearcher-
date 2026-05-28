@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require("cors");
 
-const http = require("http");
 const { Server } = require("socket.io");
 
 const pool = require("./db/pool");
@@ -21,7 +20,7 @@ app.use("/api/messages", require("./routes/messages"));
 app.use("/api/block", require("./routes/block"));
 
 // Start the server and set up Socket.IO for real-time messaging
-const server = http.createServer(app);
+const server = require("http").createServer(app);
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:5173",
@@ -31,7 +30,7 @@ const io = new Server(server, {
 
 // Scocket.IO connection handling. Listen for users joining conversations and sending messages
 io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    console.log("A user connected:" + socket.id);
 
     // Listen for users joining a conversation room
     socket.on("join_conversation", async ({ conversationId, userId }) => {
