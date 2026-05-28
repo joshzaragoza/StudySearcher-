@@ -4,13 +4,13 @@ const router = express.Router();
 
 router.post("/open", async (req, res) => {
     try {
-        const { currentUserId, otheruserId } = req.body;
+        const { currentUserId, otherUserId } = req.body;
 
-        if (!currentUserId || !otheruserId) {
-            return res.status(400).json({ message: "Missing currentUserId or otheruserId." });
+        if (!currentUserId || !otherUserId) {
+            return res.status(400).json({ message: "Missing currentUserId or otherUserId." });
         }
 
-        if (Number(currentUserId) === Number(otheruserId)) {
+        if (Number(currentUserId) === Number(otherUserId)) {
             return res.status(400).json({ message: "Cannot open conversation with yourself." });
         }
 
@@ -44,7 +44,7 @@ router.post("/open", async (req, res) => {
             AND cm2.user_id = $2
             LIMIT 1
             `,
-            [currentUserId, otheruserId]
+            [currentUserId, otherUserId]
         );
 
         if (existingConversation.rows.length > 0) {
@@ -68,7 +68,7 @@ router.post("/open", async (req, res) => {
             INSERT INTO conversation_members (conversation_id, user_id)
             VALUES ($1, $2), ($1, $3)
             `,
-            [conversationId, currentUserId, otheruserId]
+            [conversationId, currentUserId, otherUserId]
         );
 
        return res.status(201).json({ conversationId });

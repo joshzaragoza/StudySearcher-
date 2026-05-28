@@ -32,6 +32,7 @@ function MatchesPage() {
     }, []);
 
     async function openConversation(match) {
+        // debugging logs. 
         console.log("logged in user:", user);
         console.log("match clicked:", match);
 
