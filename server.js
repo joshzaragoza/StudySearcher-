@@ -79,14 +79,24 @@ io.on("connection", (socket) => {
                 return;
             }
 
-            // Insert the new message into the database
             const newMessage = await pool.query(
                 `
-                INSERT INTO messages (conversation_id, sender_id, body)
-                VALUES ($1, $2, $3)
-                RETURNING id, conversation_id, sender_id, body, created_at
+                WITH inserted_message AS (
+                    INSERT INTO messages (conversation_id, sender_id, body)
+                    VALUES ($1, $2, $3)
+                    RETURNING id, conversation_id, sender_id, body, created_at
+                )
+                SELECT 
+                    inserted_message.id,
+                    inserted_message.conversation_id,
+                    inserted_message.sender_id,
+                    users.name AS sender_name,
+                    inserted_message.body,
+                    inserted_message.created_at
+                FROM inserted_message
+                JOIN users ON inserted_message.sender_id = users.id
                 `,
-                [conversationId, senderId, body]
+                [conversationId, senderId, body.trim()]
             );
 
             // Emit the new message to all users in the conversation room

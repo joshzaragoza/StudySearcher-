@@ -40,7 +40,9 @@ function ChatPage() {
 
     // Listen for new messages being sent in this conversation and update the message list when they arrive
     socket.on("new_message", (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      if (String(newMessage.conversation_id) === String(conversationId)) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
     });
 
     return () => {
@@ -48,7 +50,9 @@ function ChatPage() {
     };
   }, [conversationId, user?.id]);
 
-  async function sendMessage() {
+  function sendMessage(e) {
+    e.preventDefault();
+    
     if (!body.trim()) {
       setMessage("Message cannot be empty.");
       return;
@@ -74,7 +78,12 @@ function ChatPage() {
       <div className="messages">
         {messages.map((msg) => (
           <p key={msg.id}>
-            <strong>{msg.sender_id === user.id ? "You" : "Them"}:</strong>{" "}
+           <strong>
+              {Number(msg.sender_id) === Number(user.id)
+                ? "You"
+                : msg.sender_name || "Unknown User"}
+              :
+            </strong>{" "}
             {msg.body}
           </p>
         ))}
