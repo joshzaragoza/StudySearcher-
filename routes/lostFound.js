@@ -2,6 +2,10 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
+const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+
+// GET /api/lostfound
+// Returns a list of all lost and found posts, including each post's id, content, created_at timestamp, and the poster's name, ordered by most recent first.
 router.get("/", async (req, res) => {
     try {
         const result = await pool.query(
@@ -18,12 +22,19 @@ router.get("/", async (req, res) => {
     }
 });
 
+// POST /api/lostfound
+// Takes in: user_id and content in req.body.
+// Creates a new lost/found post and returns the created post's id, content, created_at timestamp, and the poster's name.
 router.post("/", async (req, res) => {
     try {
         const { user_id, content } = req.body;
-
-        if (!user_id || !content || content.trim() === "") {
-            return res.status(400).json({ message: "User ID and content are required." });
+        
+        if (!isPositiveInteger(user_id)) {
+            return res.status(400).json({ message: "Invalid user ID." });
+        }
+        
+        if (!content || content.trim() === "") {
+            return res.status(400).json({ message: "Content is required." });
         }
 
         if (content.length > 5000) {
