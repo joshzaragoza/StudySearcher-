@@ -2,9 +2,19 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
+const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+
+// GET /api/matches/:id
+// Takes in: user id as req.params.id.
+// Returns: a list of matching users who share at least one class with the given user, excluding any users who have blocked or been blocked by the given user. Each match includes the matched user's id, name, uid, and one shared class code.
 router.get("/:id", async (req, res) => {
     try {
         const userId = req.params.id;
+
+        // Validate userId if pos or not
+        if (!isPositiveInteger(userId)) {
+            return res.status(400).json({ message: "Invalid user ID." });
+        }
 
         const matchesResult = await pool.query(
             `
