@@ -122,4 +122,42 @@ router.get("/:conversationId/other/:userId", async (req, res) => {
     }
 });
 
+router.get("/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Validate userId        
+        if (!userId) {
+            return res.status(400).json({ message: "Missing userId query parameter." });
+        }
+
+        // Fetch all one-on-one conversations for the user, along with the other user's info
+        const result = await pool.query(
+            `
+            SELECT
+                conversations.id AS conversation_id,
+                users.id AS other_user_id,
+                users.name AS other_user_name
+            FROM conversations
+            JOIN conversation_members current_member
+                ON conversations.id = current_member.conversation_id
+            JOIN conversation_members other_member
+                ON conversations.id = other_member.conversation_id
+            JOIN users
+                ON other_member.user_id = users.id
+            WHERE current_member.user_id = $1
+                AND other_member.user_id != $1
+                AND conversations.is_group = false
+            ORDER BY conversations.created_at DESC
+            `,
+            [userId]
+        );
+        
+        res.json({ conversations: result.rows });
+    } catch (error) {
+        console.error("Error fetching conversations:", error);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
 module.exports = router;

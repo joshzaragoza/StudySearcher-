@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
@@ -7,6 +7,7 @@ import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavBar from "./components/Navbar";
 import ChatPage from "./pages/ChatPage";  
+import MessagesPage from "./pages/MessagesPage";
 
 function PrivateRoute({ children }) {
   const loggedInUser = localStorage.getItem("loggedInUser");
@@ -44,6 +45,15 @@ function AppMain() {
           element={
             <PrivateRoute>
               <MatchesPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/messages"
+          element={
+            <PrivateRoute>
+              <MessagesPage />
             </PrivateRoute>
           }
         />
