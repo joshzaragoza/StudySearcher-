@@ -1529,3 +1529,11 @@ html {
     width: 100%;
   }
 }
+
+/* small chat-header function to display shared classes in ChatPage.jsx */
+.chat-shared-classes {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  color: var(--c-text-2);
+}
