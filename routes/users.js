@@ -129,16 +129,16 @@ router.post("/:id/availability", async (req, res) => {
             return res.status(400).json({ message: "Invalid user ID." });
         }
 
+        // Validate availability input
+        if (!Array.isArray(availability)) {
+            return res.status(400).json({ message: "Availability must be an array." });
+        }
+
         // Delete existing availability for the user before inserting new ones
         await pool.query(
             "DELETE FROM availability WHERE user_id = $1",
             [userId]
         );
-
-        // Validate availability input
-        if (!Array.isArray(availability)) {
-            return res.status(400).json({ message: "Availability must be an array." });
-        }
 
         // Insert new availability slots for the user
         for (const slot of availability) {
