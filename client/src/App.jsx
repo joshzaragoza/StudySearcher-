@@ -10,6 +10,8 @@ import NavBar from "./components/Navbar";
 import ChatPage from "./pages/ChatPage";  
 import MessagesPage from "./pages/MessagesPage";
 
+import "./App.css";
+
 function PrivateRoute({ children }) {
   const loggedInUser = localStorage.getItem("loggedInUser");
   if (!loggedInUser) {
