@@ -19,7 +19,35 @@ function MatchesPage() {
                 const data = await res.json();
 
                 if (res.ok) {
-                    setMatches(data.matches);
+                    // For each match, also fetch the shared classes to display in the UI
+                    const matchesWithSharedClasses = await Promise.all(
+                        data.matches.map(async (match) => {
+                            try {
+                                const sharedRes = await fetch(
+                                    `http://localhost:3000/api/matches/shared/${user.id}/${match.id}`
+                                );
+                                const sharedData = await sharedRes.json();
+                                
+                                // If the shared classes fetch is successful, add the shared_classes array to the match object
+                                if (sharedRes.ok) {
+                                    return {
+                                        ...match,
+                                        shared_classes: sharedData.sharedClasses,
+                                    };
+                                }
+                            } catch (error) {
+                                console.error("Could not load shared classes:", error);
+                            }
+                            
+                            // If there was an error fetching shared classes, return the match object without the shared_classes field (or with it as an empty array)
+                            return {
+                                ...match,
+                                shared_classes: match.shared_class ? [match.shared_class] : [],
+                            };
+                        })
+                    );
+
+                    setMatches(matchesWithSharedClasses);
                 } else {
                     setMessage(data.message || "Could not load matches.");
                 }
@@ -35,7 +63,7 @@ function MatchesPage() {
         // debugging logs. 
         console.log("logged in user:", user);
         console.log("match clicked:", match);
-
+        
         try {
             const res = await fetch("http://localhost:3000/api/conversations/open", {
                 method: "POST",
@@ -76,7 +104,10 @@ function MatchesPage() {
                 <ul className="matches-list">
                     {matches.map((match, index) => (
                         <li key={index} className="match-card">
-                            {match.name} — Shared class: {match.shared_class}
+                            {match.name} — Shared classes:{" "}
+                            {match.shared_classes?.length > 0
+                                ? match.shared_classes.join(", ")
+                                : match.shared_class || "None listed"}
 
                             <button className="btn btn--primary" onClick={() => openConversation(match)}>
                                 Message

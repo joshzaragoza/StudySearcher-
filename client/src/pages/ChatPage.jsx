@@ -8,6 +8,7 @@ function ChatPage() {
   const [body, setBody] = useState("");
   const [message, setMessage] = useState("");
   const [otherUser, setOtherUser] = useState(null);
+  const [sharedClasses, setSharedClasses] = useState([]);
 
   // get conversation ID from URL and user info from local storage
   const storedUser = localStorage.getItem("loggedInUser");
@@ -45,11 +46,28 @@ function ChatPage() {
 
         if (res.ok) {
           setOtherUser(data.otherUser);
+          fetchSharedClasses(data.otherUser.id);
         } else {
           setMessage(data.message || "Could not load chat user.");
         }
       } catch (error) {
         setMessage("Could not connect to server.");
+      }
+    }
+
+    async function fetchSharedClasses(otherUserId) {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/matches/shared/${user.id}/${otherUserId}`
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setSharedClasses(data.sharedClasses);
+        }
+      } catch (error) {
+        console.error("Could not load shared classes:", error);
       }
     }
 
@@ -135,7 +153,14 @@ function ChatPage() {
 
       {otherUser && (
         <div className="chat-header">
-          <h2>Chat with {otherUser.name}</h2>
+          <div>
+            <h2>{otherUser.name}</h2>
+            {sharedClasses.length > 0 && (
+              <p className="chat-shared-classes">
+                Shared classes: {sharedClasses.join(", ")}
+              </p>
+            )}
+          </div>
           <button type="button" className="btn btn--danger" onClick={blockUser}>
             Block User
           </button>
@@ -146,7 +171,9 @@ function ChatPage() {
 
       <div className="messages">
         {messages.map((msg) => (
-          <p key={msg.id}>
+          // LLM recomendation: use a different CSS class for messages sent by the logged in user vs messages sent by the other user, so they can be styled differently (e.g. aligned to the right with a different background color for the logged in user's messages)
+          // refere to LLM-GENERATED.txt for the CSS code that goes with this
+          <p key={msg.id} className={`message--${Number(msg.sender_id) === Number(user.id) ? 'sent' : 'received'}`}>
            <strong>
               {Number(msg.sender_id) === Number(user.id)
                 ? "You"
