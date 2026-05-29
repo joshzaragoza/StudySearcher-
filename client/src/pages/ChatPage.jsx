@@ -171,7 +171,9 @@ function ChatPage() {
 
       <div className="messages">
         {messages.map((msg) => (
-          <p key={msg.id}>
+          // LLM recomendation: use a different CSS class for messages sent by the logged in user vs messages sent by the other user, so they can be styled differently (e.g. aligned to the right with a different background color for the logged in user's messages)
+          // refere to LLM-GENERATED.txt for the CSS code that goes with this
+          <p key={msg.id} className={`message--${Number(msg.sender_id) === Number(user.id) ? 'sent' : 'received'}`}>
            <strong>
               {Number(msg.sender_id) === Number(user.id)
                 ? "You"
