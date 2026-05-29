@@ -47,9 +47,12 @@ router.post("/", async (req, res) => {
         [blockerId, blockedId]
       );
 
+      // Extract conversation IDs to delete
       const conversationIds = conversations.rows.map(row => Number(row.id));
 
       // Delete any conversations between the two users
+      // MAKE SURE TO USE ANY() WITH A PARAMETERIZED QUERY TO AVOID SQL INJECTION
+      // CAST TO int[] TO MATCH THE TYPE OF id
       if (conversationIds.length > 0) {
         await client.query(
           "DELETE FROM conversations WHERE id = ANY($1::int[])",
