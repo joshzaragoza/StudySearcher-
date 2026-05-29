@@ -29,12 +29,21 @@ const io = new Server(server, {
     }
 });
 
+// Helper function to validate that a value is a positive integer
+const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+
 // Scocket.IO connection handling. Listen for users joining conversations and sending messages
 io.on("connection", (socket) => {
     console.log("A user connected:" + socket.id);
 
     // Listen for users joining a conversation room
     socket.on("join_conversation", async ({ conversationId, userId }) => {
+        // Validate conversationId and userId
+        if (!isPositiveInteger(conversationId) || !isPositiveInteger(userId)) {
+            console.warn("Invalid conversation ID or user ID");
+            return;
+        }
+
        // Confirm that the user is a member of the conversation before allowing them to join the room
         const memberCheck = await pool.query(
             `
@@ -59,7 +68,7 @@ io.on("connection", (socket) => {
     socket.on("send_message", async ({ conversationId, senderId, body }) => {
         try {
             // Validate message data
-            if (!conversationId || !senderId || !body?.trim()) {
+            if (!isPositiveInteger(conversationId) || !isPositiveInteger(senderId) || typeof body !== "string" || body.trim() === "") {
                 console.warn("Invalid message data");
                 return;
             }
