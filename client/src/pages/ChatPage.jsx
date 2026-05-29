@@ -119,7 +119,7 @@ function ChatPage() {
 
     if (res.ok) {
       alert("User blocked.");
-      window.location.href = "/matches"; // use /messages later once that page exists
+      window.location.href = "/messages"; // use /messages later once that page exists
     } else {
       setMessage(data.message || "Could not block user.");
     }

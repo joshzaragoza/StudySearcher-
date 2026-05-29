@@ -5,6 +5,7 @@ function NavBar() {
             <div className="navbar-links">
                 <a href="/home" className="navbar-link">Home</a>
                 <a href="/matches" className="navbar-link">Matches</a>
+                <a href="/messages" className="navbar-link">Messages</a>
                 <a href="/profile" className="navbar-link">Profile</a>
                 <button
                     className="btn btn--danger"
