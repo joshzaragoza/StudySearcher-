@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
+import LostFoundPage from "./pages/LostFoundPage";
 import NavBar from "./components/Navbar";
 import ChatPage from "./pages/ChatPage";  
 import MessagesPage from "./pages/MessagesPage";
@@ -30,7 +31,7 @@ function AppMain() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
-        
+
         <Route
           path="/profile"
           element={
@@ -63,6 +64,15 @@ function AppMain() {
           element={
             <PrivateRoute>
               <ChatPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/lost-found"
+          element={
+            <PrivateRoute>
+              <LostFoundPage />
             </PrivateRoute>
           }
         />
