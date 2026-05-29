@@ -4,6 +4,9 @@ const router = express.Router();
 
 const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
 
+// GET /api/users/:id/profile
+// Takes in: user id as req.params.id.
+// Returns: the user's basic profile, saved classes, and availability
 router.get("/:id/profile", async (req, res) => {
     try {
         const userId = req.params.id;
@@ -57,6 +60,8 @@ router.get("/:id/profile", async (req, res) => {
     }
 });
 
+// POST /api/users/:id/classes
+// Takes in: user id as req.params.id, and an array of classes with their professors in the request body.
 router.post("/:id/classes", async (req, res) => {
     try {
         const userId = req.params.id;
@@ -112,6 +117,9 @@ router.post("/:id/classes", async (req, res) => {
     }
 });
 
+// POST /api/users/:id/availability
+// Takes in: user id as req.params.id, and an array of availability slots in the request body.
+// Each availability slot should include day_of_week (0-6 for Sunday-Saturday), start_time, and end_time.
 router.post("/:id/availability", async (req, res) => {
     try {
         const userId = req.params.id;
