@@ -1058,12 +1058,6 @@ button:not([class]):focus-visible {
    § 13. LOST & FOUND PAGE
    ================================================================ */
 
-/* The outer <div> has no class, so we style inside it
-   by cascading generic element rules */
-
-/* Page-level wrapper heuristic: a top-level div that contains
-   h1, form, hr, ul (LostFoundPage) */
-body > #root > div > div:not([class]),
 .lost-found-container {
   max-width: var(--mid);
   margin-inline: auto;
@@ -1071,51 +1065,51 @@ body > #root > div > div:not([class]),
   animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Generic standalone button (Post, Back to Home in LostFoundPage) */
-button[type="submit"]:not([class]),
-button[type="button"]:not([class]) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.6rem 1.3rem;
-  border-radius: var(--r-pill);
-  font-family: var(--ff);
-  font-size: var(--fs-15);
-  font-weight: var(--fw-semi);
-  letter-spacing: -0.01em;
-  border: none;
-  cursor: pointer;
-  transition:
-    background var(--t-2),
-    box-shadow  var(--t-2),
-    transform   var(--t-spring);
+.lost-found-container h1 {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.035em;
+  margin-bottom: var(--sp-8);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--c-border);
 }
 
-button[type="submit"]:not([class]) {
-  background: var(--c-accent);
-  color: #fff;
+.lost-found-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
 }
 
-button[type="submit"]:not([class]):hover {
-  background: var(--c-accent-h);
-  box-shadow: 0 3px 14px rgba(0, 113, 227, 0.3);
+.character-count,
+.empty-state,
+.post-time {
+  font-size: var(--fs-13);
+  color: var(--c-text-2);
 }
 
-button[type="submit"]:not([class]):active,
-button[type="button"]:not([class]):active {
-  transform: scale(0.97);
+.lost-found-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-8);
 }
 
-button[type="button"]:not([class]) {
-  background: var(--c-bg-2);
-  color: var(--c-text);
-  box-shadow: inset 0 0 0 1.5px var(--c-border);
-  margin-top: var(--sp-4);
+.lost-found-post {
+  padding: var(--sp-5) var(--sp-6);
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-sm);
+  text-align: left;
 }
 
-button[type="button"]:not([class]):hover {
-  background: var(--c-bg-3);
-  box-shadow: inset 0 0 0 1.5px var(--c-muted);
+.lost-found-post strong {
+  margin-right: var(--sp-3);
+}
+
+.lost-found-post p {
+  margin-top: var(--sp-2);
+  white-space: pre-wrap;
 }
 
 

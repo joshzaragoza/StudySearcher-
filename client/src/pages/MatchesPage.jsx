@@ -63,7 +63,7 @@ function MatchesPage() {
 
     return (
         <div className="matches-container">
-            <div className="matches-heaeder">
+            <div className="matches-header">
                 <h1>Study Partner Matches</h1>
                 <p>Here are your current matches based on your profile information.</p>
             </div>

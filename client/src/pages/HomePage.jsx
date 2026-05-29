@@ -1,5 +1,3 @@
-import ProfilePage from "./ProfilePage";
-
 function HomePage() {
     const loggedInUser = localStorage.getItem("loggedInUser");
     const user = loggedInUser ? JSON.parse(loggedInUser) : null;
