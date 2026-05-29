@@ -24,7 +24,32 @@ function MessagesPage() {
         const data = await res.json();
 
         if (res.ok) {
-          setConversations(data.conversations);
+          const conversationsWithSharedClasses = await Promise.all(
+            (data.conversations || []).map(async (conversation) => {
+              try {
+                const sharedRes = await fetch(
+                  `http://localhost:3000/api/matches/shared/${user.id}/${conversation.other_user_id}`
+                );
+                const sharedData = await sharedRes.json();
+
+                if (sharedRes.ok) {
+                  return {
+                    ...conversation,
+                    shared_classes: sharedData.sharedClasses || [],
+                  };
+                }
+              } catch (error) {
+                console.error("Could not load shared classes:", error);
+              }
+
+              return {
+                ...conversation,
+                shared_classes: [],
+              };
+            })
+          );
+
+          setConversations(conversationsWithSharedClasses);
         } else {
           setMessage(data.message || "Could not load messages.");
         }
@@ -40,6 +65,18 @@ function MessagesPage() {
     return <p>Please log in first.</p>;
   }
 
+  function getSharedClasses(conversation) {
+    if (Array.isArray(conversation.shared_classes)) {
+      return conversation.shared_classes;
+    }
+
+    if (conversation.shared_class) {
+      return [conversation.shared_class];
+    }
+
+    return [];
+  }
+
   return (
     <div className="messages-page">
       <h1>Messages</h1>
@@ -50,18 +87,30 @@ function MessagesPage() {
         <p>No conversations yet.</p>
       ) : (
         <ul>
-          {conversations.map((conversation) => (
-            <li key={conversation.conversation_id}>
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  (window.location.href = `/chat/${conversation.conversation_id}`)
-                }
-              >
-                Chat with {conversation.other_user_name}
-              </button>
-            </li>
-          ))}
+          {conversations.map((conversation) => {
+            const sharedClasses = getSharedClasses(conversation);
+
+            return (
+              <li key={conversation.conversation_id}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    (window.location.href = `/chat/${conversation.conversation_id}`)
+                  }
+                >
+                  <span className="conversation-title">
+                    Chat with {conversation.other_user_name}
+                  </span>
+
+                  {sharedClasses.length > 0 && (
+                    <span className="conversation-shared-classes">
+                      Shared classes: {sharedClasses.join(", ")}
+                    </span>
+                  )}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
 
