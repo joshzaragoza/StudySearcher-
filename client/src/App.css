@@ -1,184 +1,1531 @@
-.counter {
+/* ================================================================
+   StudySearcher — Global Stylesheet
+   Apple-Inspired Light Theme | Pure CSS
+   Import this in your main entry (App.jsx / main.jsx).
+   The Auth.css file can simply @import this, or be replaced by it.
+   ================================================================ */
+
+
+/* ================================================================
+   § 0. GOOGLE FONTS
+   ================================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap');
+
+
+/* ================================================================
+   § 1. CSS CUSTOM PROPERTIES
+   ================================================================ */
+:root {
+  /* ─── Core Palette ─── */
+  --c-bg:            #FFFFFF;
+  --c-bg-2:          #F5F5F7;
+  --c-bg-3:          #EBEBF0;
+  --c-border:        #E5E5EA;
+  --c-border-light:  #F2F2F7;
+  --c-muted:         #D1D1D6;
+  --c-text-2:        #6E6E73;
+  --c-text:          #1D1D1F;
+
+  /* ─── Accent & Status ─── */
+  --c-accent:        #0071E3;
+  --c-accent-h:      #0077ED;
+  --c-accent-a:      #005EC4;
+  --c-accent-bg:     rgba(0, 113, 227, 0.08);
+  --c-success:       #34C759;
+  --c-success-bg:    rgba(52, 199, 89, 0.09);
+  --c-error:         #FF3B30;
+  --c-error-bg:      rgba(255, 59, 48, 0.08);
+  --c-error-border:  rgba(255, 59, 48, 0.22);
+  --c-warning:       #FF9500;
+
+  /* ─── Typography ─── */
+  --ff:         'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  --fs-11:      0.6875rem;   /*  11px */
+  --fs-13:      0.8125rem;   /*  13px */
+  --fs-15:      0.9375rem;   /*  15px */
+  --fs-17:      1.0625rem;   /*  17px */
+  --fs-19:      1.1875rem;   /*  19px */
+  --fs-22:      1.375rem;    /*  22px */
+  --fs-28:      1.75rem;     /*  28px */
+  --fs-36:      2.25rem;     /*  36px */
+  --fs-48:      3rem;        /*  48px */
+  --fs-64:      4rem;        /*  64px */
+  --fw-light:   300;
+  --fw-normal:  400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+  --fw-extra:   800;
+
+  /* ─── Spacing ─── */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.25rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+  --sp-24: 6rem;
+
+  /* ─── Border Radius ─── */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --r-2xl:  28px;
+  --r-pill: 9999px;
+
+  /* ─── Shadows ─── */
+  --sh-xs:     0 1px 3px rgba(0, 0, 0, 0.06);
+  --sh-sm:     0 2px 8px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --sh-md:     0 4px 20px rgba(0, 0, 0, 0.09), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --sh-lg:     0 8px 40px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.05);
+  --sh-xl:     0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --sh-focus:  0 0 0 3px rgba(0, 113, 227, 0.28);
+  --sh-card:   0 0 0 1px var(--c-border), var(--sh-sm);
+
+  /* ─── Transitions ─── */
+  --t-1:      80ms ease;
+  --t-2:      160ms ease;
+  --t-3:      240ms ease;
+  --t-4:      360ms ease;
+  --t-spring: 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ─── Layout ─── */
+  --max-w:    1080px;
+  --narrow:   480px;
+  --mid:      720px;
+}
+
+
+/* ================================================================
+   § 2. BASE RESET & NORMALIZE
+   ================================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
   font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+body {
+  font-family: var(--ff);
+  font-size: var(--fs-17);
+  font-weight: var(--fw-normal);
+  line-height: 1.6;
+  color: var(--c-text);
+  background-color: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  animation: pageFadeIn 0.35s ease both;
 }
 
-#center {
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--c-accent);
+  text-decoration: none;
+  transition: color var(--t-2);
+}
+
+a:hover {
+  color: var(--c-accent-h);
+}
+
+ul {
+  list-style: none;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--c-border);
+  margin-block: var(--sp-8);
+}
+
+
+/* ================================================================
+   § 3. TYPOGRAPHY
+   ================================================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--ff);
+  font-weight: var(--fw-bold);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--c-text);
+}
+
+h1 { font-size: var(--fs-36); letter-spacing: -0.035em; }
+h2 { font-size: var(--fs-28); letter-spacing: -0.028em; }
+h3 { font-size: var(--fs-22); letter-spacing: -0.022em; }
+h4 { font-size: var(--fs-19); }
+
+p {
+  line-height: 1.65;
+  color: var(--c-text);
+}
+
+strong {
+  font-weight: var(--fw-semi);
+}
+
+
+/* ================================================================
+   § 4. FORMS & INPUTS
+   ================================================================ */
+
+/* Universal input reset & base */
+input,
+textarea,
+select {
+  font-family: var(--ff);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-normal);
+  color: var(--c-text);
+  display: block;
+  width: 100%;
+  padding: 0.7rem var(--sp-4);
+  background: var(--c-bg);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-lg);
+  line-height: 1.5;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    border-color var(--t-2),
+    box-shadow    var(--t-2),
+    background    var(--t-2);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--c-muted);
+  font-weight: var(--fw-normal);
+}
+
+input:hover:not(:focus):not(:disabled),
+textarea:hover:not(:focus):not(:disabled) {
+  border-color: var(--c-text-2);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--c-accent);
+  box-shadow: var(--sh-focus);
+  background: var(--c-bg);
+}
+
+input:disabled,
+textarea:disabled {
+  background: var(--c-bg-2);
+  color: var(--c-muted);
+  cursor: not-allowed;
+}
+
+/* Time picker adjustments */
+input[type="time"] {
+  padding: 0.5rem var(--sp-3);
+  font-size: var(--fs-13);
+  cursor: pointer;
+  min-width: 110px;
+}
+
+/* Textarea */
+textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+  padding: var(--sp-3) var(--sp-4);
+}
+
+
+/* ================================================================
+   § 5. BUTTONS
+   ================================================================ */
+
+/* Unclassed buttons (e.g. LostFoundPage) get a clean default */
+button:not([class]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--r-pill);
+  font-family: var(--ff);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-semi);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  border: 1.5px solid var(--c-border);
+  background: var(--c-bg);
+  color: var(--c-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background   var(--t-2),
+    border-color var(--t-2),
+    box-shadow   var(--t-2),
+    transform    var(--t-spring);
+}
+
+button:not([class]):hover {
+  background: var(--c-bg-2);
+  border-color: var(--c-text-2);
+}
+
+button:not([class]):active {
+  transform: scale(0.97);
+}
+
+button:not([class]):focus-visible {
+  outline: none;
+  box-shadow: var(--sh-focus);
+}
+
+/* Base .btn class — shared foundation */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0.6rem 1.3rem;
+  border-radius: var(--r-pill);
+  font-family: var(--ff);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-semi);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    background   var(--t-2),
+    color        var(--t-2),
+    box-shadow   var(--t-2),
+    transform    var(--t-spring),
+    opacity      var(--t-2);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--sh-focus);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* — Primary (both dash conventions) — */
+.btn-primary,
+.btn--primary {
+  background: var(--c-accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn--primary:hover {
+  background: var(--c-accent-h);
+  box-shadow: 0 3px 14px rgba(0, 113, 227, 0.32);
+}
+
+.btn-primary:active,
+.btn--primary:active {
+  background: var(--c-accent-a);
+  box-shadow: none;
+}
+
+/* — Secondary (both dash conventions) — */
+.btn-secondary,
+.btn--secondary {
+  background: var(--c-bg-2);
+  color: var(--c-text);
+  box-shadow: inset 0 0 0 1.5px var(--c-border);
+}
+
+.btn-secondary:hover,
+.btn--secondary:hover {
+  background: var(--c-bg-3);
+  box-shadow: inset 0 0 0 1.5px var(--c-muted);
+}
+
+.btn-secondary:active,
+.btn--secondary:active {
+  background: var(--c-bg-3);
+  box-shadow: inset 0 0 0 1.5px var(--c-text-2);
+}
+
+/* — Danger — */
+.btn--danger,
+.btn-danger {
+  background: var(--c-error);
+  color: #ffffff;
+}
+
+.btn--danger:hover,
+.btn-danger:hover {
+  background: #E8362B;
+  box-shadow: 0 3px 14px rgba(255, 59, 48, 0.30);
+}
+
+.btn--danger:active,
+.btn-danger:active {
+  background: #D12F25;
+  box-shadow: none;
+}
+
+
+/* ================================================================
+   § 6. STATUS & ERROR MESSAGES
+   ================================================================ */
+.error-msg,
+.text-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  color: var(--c-error);
+  background: var(--c-error-bg);
+  border: 1px solid var(--c-error-border);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+  width: 100%;
+  line-height: 1.5;
+}
+
+.error-msg::before,
+.text-error::before {
+  content: "⚠";
+  flex-shrink: 0;
+  font-size: var(--fs-13);
+}
+
+.success-msg {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  color: #1a7f37;
+  background: var(--c-success-bg);
+  border: 1px solid rgba(52, 199, 89, 0.22);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+  width: 100%;
+}
+
+
+/* ================================================================
+   § 7. HOME PAGE
+   ================================================================ */
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--sp-12) var(--sp-5);
+  background: var(--c-bg);
+
+  /* Subtle radial glow for atmosphere */
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 113, 227, 0.06) 0%, transparent 70%);
+}
+
+.home-hero {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+  align-items: center;
+  text-align: center;
+  max-width: 640px;
+  animation: slideUpFade 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-#next-steps {
+/* Brand name — large, bold, gradient treatment */
+.home-hero__main {
+  display: block;
+  font-size: clamp(var(--fs-48), 9vw, var(--fs-64));
+  font-weight: var(--fw-extra);
+  letter-spacing: -0.045em;
+  line-height: 1.0;
+  margin-bottom: var(--sp-4);
+
+  /* Apple-style text gradient */
+  background: linear-gradient(
+    140deg,
+    #1D1D1F 0%,
+    #3C3C3F 45%,
+    var(--c-accent) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-hero h2 {
+  font-size: clamp(var(--fs-22), 4vw, var(--fs-28));
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.02em;
+  color: var(--c-text);
+  margin-bottom: var(--sp-3);
+}
+
+.home-hero > p {
+  font-size: var(--fs-19);
+  color: var(--c-text-2);
+  font-weight: var(--fw-normal);
+  line-height: 1.55;
+  margin-bottom: var(--sp-10);
+  max-width: 480px;
+}
+
+/* Button group within hero */
+.home-hero .btn {
+  margin: var(--sp-2);
+  padding: 0.75rem 1.75rem;
+  font-size: var(--fs-17);
+}
+
+
+/* ================================================================
+   § 8. AUTH PAGES — Login & Signup
+   ================================================================ */
+.auth-container {
   display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--sp-6) var(--sp-5);
+  background: var(--c-bg-2);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0, 113, 227, 0.05) 0%, transparent 65%);
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
+/* The form itself carries .auth-box in the JSX */
+.auth-box {
   display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
+  flex-direction: column;
+  gap: var(--sp-4);
   width: 100%;
+  max-width: var(--narrow);
+  background: var(--c-bg);
+  border-radius: var(--r-2xl);
+  border: 1px solid var(--c-border);
+  padding: var(--sp-10) var(--sp-8);
+  box-shadow: var(--sh-xl);
+  animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+.auth-box h1 {
+  font-size: var(--fs-28);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.03em;
+  text-align: center;
+  margin-bottom: var(--sp-2);
+}
+
+.auth-box input {
+  padding: 0.75rem var(--sp-4);
+}
+
+/* Make submit button full-width inside auth box */
+.auth-box button[type="submit"],
+.auth-box .btn {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: var(--fs-17);
+  border-radius: var(--r-lg);
+}
+
+.auth-box > p {
+  font-size: var(--fs-13);
+  color: var(--c-text-2);
+  text-align: center;
+  margin-top: var(--sp-1);
+}
+
+.auth-link {
+  display: block;
+  font-size: var(--fs-13) !important;
+  color: var(--c-accent) !important;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  text-align: center;
+  transition: color var(--t-2);
+}
+
+.auth-link:hover {
+  color: var(--c-accent-h) !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
+/* ================================================================
+   § 9. PROFILE PAGE
+   ================================================================ */
+.profile-container {
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding: var(--sp-10) var(--sp-5) var(--sp-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Profile Header ── */
+.profile-header {
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.profile-header h1 {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.035em;
+  margin-bottom: var(--sp-4);
+}
+
+.profile-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4) var(--sp-8);
+}
+
+.profile-details p {
+  font-size: var(--fs-15);
+  color: var(--c-text-2);
+  font-weight: var(--fw-normal);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-pill);
+}
+
+/* ── Classes Section ── */
+.profile-classes {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6);
+  box-shadow: var(--sh-sm);
+}
+
+.class-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--c-border-light);
+}
+
+.class-input-container h2 {
+  font-size: var(--fs-22);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+  margin-bottom: var(--sp-1);
+}
+
+/* Class list */
+.class-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.class-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border-light);
+  border-radius: var(--r-lg);
+  transition:
+    background    var(--t-2),
+    border-color  var(--t-2),
+    box-shadow    var(--t-2);
+}
+
+.class-list li:hover {
+  background: var(--c-bg-3);
+  border-color: var(--c-border);
+  box-shadow: var(--sh-xs);
+}
+
+.class-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.class-name {
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-15);
+  color: var(--c-text);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.class-professor {
+  font-size: var(--fs-13);
+  color: var(--c-text-2);
+  font-weight: var(--fw-normal);
+}
+
+/* Keep remove button compact */
+.class-list .btn--danger {
+  flex-shrink: 0;
+  padding: 0.35rem 0.9rem;
+  font-size: var(--fs-13);
+  border-radius: var(--r-pill);
+}
+
+/* ── Availability Section ── */
+.profile-availability {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6);
+  box-shadow: var(--sh-sm);
+}
+
+.profile-availability h2 {
+  font-size: var(--fs-22);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+  margin-bottom: var(--sp-5);
+}
+
+.availability-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.availability-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  transition: background var(--t-2);
+}
+
+.availability-row:hover {
+  background: var(--c-bg-2);
+}
+
+.availability-row label {
+  font-size: var(--fs-15);
+  font-weight: var(--fw-medium);
+  color: var(--c-text);
+  letter-spacing: -0.01em;
+  user-select: none;
+}
+
+/* ── Profile Actions ── */
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--c-border);
+}
+
+.profile-actions .btn {
+  flex-shrink: 0;
+  padding: 0.65rem 1.4rem;
+}
+
+
+/* ================================================================
+   § 10. MATCHES PAGE
+   ================================================================ */
+.matches-container {
+  max-width: var(--mid);
+  margin-inline: auto;
+  padding: var(--sp-10) var(--sp-5) var(--sp-16);
+  animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Note: JSX has a typo "matches-heaeder" — styling both */
+.matches-heaeder,
+.matches-header {
+  margin-bottom: var(--sp-8);
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.matches-heaeder h1,
+.matches-header h1 {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.035em;
+  margin-bottom: var(--sp-2);
+}
+
+.matches-heaeder p,
+.matches-header p {
+  font-size: var(--fs-17);
+  color: var(--c-text-2);
+  font-weight: var(--fw-normal);
+}
+
+.matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-8);
+}
+
+.match-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-5) var(--sp-6);
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-sm);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-medium);
+  color: var(--c-text);
+  animation: slideUpFade var(--t-3) cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:
+    box-shadow   var(--t-2),
+    transform    var(--t-spring),
+    border-color var(--t-2);
+}
+
+.match-card:hover {
+  box-shadow: var(--sh-md);
+  border-color: var(--c-muted);
+  transform: translateY(-2px);
+}
+
+/* Stagger card entrance animations */
+.matches-list .match-card:nth-child(1)  { animation-delay:   0ms; }
+.matches-list .match-card:nth-child(2)  { animation-delay:  55ms; }
+.matches-list .match-card:nth-child(3)  { animation-delay: 110ms; }
+.matches-list .match-card:nth-child(4)  { animation-delay: 165ms; }
+.matches-list .match-card:nth-child(5)  { animation-delay: 220ms; }
+.matches-list .match-card:nth-child(6)  { animation-delay: 275ms; }
+.matches-list .match-card:nth-child(7)  { animation-delay: 330ms; }
+.matches-list .match-card:nth-child(8)  { animation-delay: 385ms; }
+.matches-list .match-card:nth-child(n+9){ animation-delay: 440ms; }
+
+.no-matches {
+  font-size: var(--fs-17);
+  color: var(--c-text-2);
+  text-align: center;
+  padding: var(--sp-20) var(--sp-8);
+  background: var(--c-bg-2);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--c-border-light);
+  font-weight: var(--fw-normal);
+  line-height: 1.6;
+}
+
+/* Make .btn inside match card compact */
+.match-card .btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1.1rem;
+  font-size: var(--fs-13);
+}
+
+
+/* ================================================================
+   § 11. CHAT PAGE
+   ================================================================ */
+.chat-container {
+  max-width: var(--mid);
+  margin-inline: auto;
+  padding: var(--sp-10) var(--sp-5) var(--sp-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.chat-container > h1 {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.035em;
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--c-border);
+}
+
+/* Chat header — name + block button */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+}
+
+.chat-header h2 {
+  font-size: var(--fs-19);
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.02em;
+}
+
+/* Messages scroll area */
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  background: var(--c-bg-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  min-height: 320px;
+  max-height: 520px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-muted) transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: var(--c-muted);
+  border-radius: var(--r-pill);
+}
+
+.messages p {
+  font-size: var(--fs-15);
+  color: var(--c-text);
+  line-height: 1.5;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--c-bg);
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border-light);
+  box-shadow: var(--sh-xs);
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.messages p strong {
+  color: var(--c-accent);
+  font-weight: var(--fw-semi);
+}
+
+/* Chat form */
+.chat-container form {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.chat-container form input {
+  flex: 1;
+  padding: 0.75rem var(--sp-4);
+  border-radius: var(--r-pill);
+}
+
+.chat-container form .btn {
+  flex-shrink: 0;
+  padding: 0.75rem 1.4rem;
+}
+
+/* Generic <p> message/error inside chat */
+.chat-container > p {
+  font-size: var(--fs-13);
+  color: var(--c-text-2);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--c-error-bg);
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-error-border);
+}
+
+
+/* ================================================================
+   § 12. MESSAGES PAGE
+   ================================================================ */
+.messages-page {
+  max-width: var(--mid);
+  margin-inline: auto;
+  padding: var(--sp-10) var(--sp-5) var(--sp-16);
+  animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.messages-page h1 {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.035em;
+  margin-bottom: var(--sp-8);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.messages-page ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-8);
+}
+
+.messages-page li {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  transition:
+    box-shadow   var(--t-2),
+    border-color var(--t-2),
+    transform    var(--t-spring);
+}
+
+.messages-page li:hover {
+  box-shadow: var(--sh-sm);
+  border-color: var(--c-muted);
+  transform: translateY(-1px);
+}
+
+/* The "Chat with …" button sits full-width inside the li */
+.messages-page li .btn,
+.messages-page li button {
+  width: 100%;
+  border-radius: 0;
+  padding: var(--sp-5) var(--sp-6);
+  font-size: var(--fs-15);
+  justify-content: flex-start;
+  text-align: left;
+  background: transparent;
+  color: var(--c-accent);
+  font-weight: var(--fw-semi);
+  box-shadow: none !important;
+}
+
+.messages-page li .btn:hover,
+.messages-page li button:hover {
+  background: var(--c-accent-bg);
+}
+
+/* Back button */
+.messages-page > .btn,
+.messages-page > button {
+  margin-top: var(--sp-6);
+}
+
+
+/* ================================================================
+   § 13. LOST & FOUND PAGE
+   ================================================================ */
+
+.lost-found-container {
+  max-width: var(--mid);
+  margin-inline: auto;
+  padding: var(--sp-10) var(--sp-5) var(--sp-16);
+  animation: slideUpFade 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lost-found-container h1 {
+  font-size: var(--fs-36);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.035em;
+  margin-bottom: var(--sp-8);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.lost-found-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.character-count,
+.empty-state,
+.post-time {
+  font-size: var(--fs-13);
+  color: var(--c-text-2);
+}
+
+.lost-found-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-8);
+}
+
+.lost-found-post {
+  padding: var(--sp-5) var(--sp-6);
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-sm);
+  text-align: left;
+}
+
+.lost-found-post strong {
+  margin-right: var(--sp-3);
+}
+
+.lost-found-post p {
+  margin-top: var(--sp-2);
+  white-space: pre-wrap;
+}
+
+
+/* ================================================================
+   § 14. CUSTOM SCROLLBAR (Global)
+   ================================================================ */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-muted) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-muted);
+  border-radius: var(--r-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-text-2);
+}
+
+
+/* ================================================================
+   § 15. ANIMATIONS & KEYFRAMES
+   ================================================================ */
+@keyframes pageFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stagger utility classes */
+.stagger-1 { animation-delay:  50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+
+
+/* ================================================================
+   § 16. RESPONSIVE — MOBILE-FIRST BREAKPOINTS
+   ================================================================ */
+
+/* ── Compact mobile (<480px) ── */
+@media (max-width: 480px) {
+  h1 { font-size: var(--fs-28) !important; }
+  h2 { font-size: var(--fs-22) !important; }
+
+  .home-hero .btn {
+    display: block;
+    width: 100%;
+    margin-inline: 0;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .home-hero > p {
+    font-size: var(--fs-17);
+    margin-bottom: var(--sp-8);
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  .auth-box {
+    padding: var(--sp-8) var(--sp-5);
+    border-radius: var(--r-xl);
+  }
+
+  .match-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+
+  .match-card .btn {
+    align-self: flex-end;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .chat-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chat-container form {
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .chat-container form input,
+  .chat-container form .btn {
+    width: 100%;
+  }
+
+  .availability-row {
+    grid-template-columns: 80px 1fr 1fr;
+    gap: var(--sp-2);
+  }
+
+  .availability-row label {
+    font-size: var(--fs-13);
+  }
+}
+
+/* ── Small+ (480px+) ── */
+@media (min-width: 480px) {
+  .auth-box {
+    padding: var(--sp-12) var(--sp-10);
+  }
+
+  .availability-row {
+    grid-template-columns: 110px 1fr 1fr;
+  }
+}
+
+/* ── Medium (640px+) ── */
+@media (min-width: 640px) {
+  /* Class input: lay 2 inputs + button side-by-side */
+  .class-input-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: var(--sp-3);
+    align-items: end;
+  }
+
+  .class-input-container h2 {
+    grid-column: 1 / -1;
+  }
+
+  .class-input-container .btn {
+    align-self: end;
+    white-space: nowrap;
+    height: calc(0.7rem * 2 + 1.5 * 1em + 3px); /* match input height */
+  }
+
+  .profile-actions {
+    flex-direction: row;
+  }
+}
+
+/* ── Tablet (768px+) ── */
+@media (min-width: 768px) {
+  h1 { font-size: var(--fs-48); }
+
+  .home-hero > p {
+    font-size: var(--fs-22);
+  }
+
+  .profile-container {
+    padding: var(--sp-16) var(--sp-8) var(--sp-20);
+  }
+
+  .profile-classes,
+  .profile-availability {
+    padding: var(--sp-8);
+  }
+
+  .matches-container {
+    padding: var(--sp-16) var(--sp-8) var(--sp-20);
+  }
+
+  .chat-container {
+    padding: var(--sp-12) var(--sp-8) var(--sp-16);
+  }
+
+  .messages-page {
+    padding: var(--sp-16) var(--sp-8) var(--sp-20);
+  }
+
+  .availability-row {
+    grid-template-columns: 120px 180px 180px;
+  }
+
+  .class-list li {
+    padding: var(--sp-4) var(--sp-6);
+  }
+}
+
+/* ── Desktop (1024px+) ── */
+@media (min-width: 1024px) {
+  .profile-container {
+    padding: var(--sp-20) var(--sp-12);
+  }
+
+  .availability-row {
+    grid-template-columns: 130px 200px 200px;
+  }
+}
+
+/* ================================================================
+  Navbar — StudySearcher Apple-Inspired Light Theme
+  Scoped to Navbar.jsx only
+  ================================================================ */
+
+.navbar {
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --nav-bg-solid: var(--c-bg, #ffffff);
+  --nav-border: var(--c-border, #e5e5ea);
+  --nav-text: var(--c-text, #1d1d1f);
+  --nav-text-muted: var(--c-text-2, #6e6e73);
+  --nav-accent: var(--c-accent, #0071e3);
+  --nav-accent-hover: #2997ff;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4, 1rem);
+
+  width: 100%;
+  padding: 0.85rem clamp(1rem, 4vw, 2.5rem);
+
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.045);
+
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+}
+
+.navbar-title {
+  flex-shrink: 0;
+
+  font-size: var(--fs-19, 1.1875rem) !important;
+  font-weight: var(--fw-bold, 700);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--nav-text);
+
+  white-space: nowrap;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+
+  min-width: 0;
+}
+
+.navbar-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+  padding: 0.48rem 0.9rem;
+
+  border-radius: var(--r-pill, 9999px);
+
+  font-size: var(--fs-13, 0.8125rem);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1;
+  letter-spacing: -0.01em;
+
+  color: var(--nav-text-muted);
+  background: transparent;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color var(--t-2, 160ms ease),
+    background var(--t-2, 160ms ease),
+    box-shadow var(--t-2, 160ms ease),
+    transform var(--t-spring, 280ms cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+.navbar-link:hover {
+  color: var(--nav-accent);
+  background: var(--c-accent-bg, rgba(0, 113, 227, 0.08));
+}
+
+.navbar-link:active {
+  transform: scale(0.97);
+}
+
+.navbar-link:focus-visible {
+  outline: none;
+  color: var(--nav-accent);
+  box-shadow: var(--sh-focus, 0 0 0 3px rgba(0, 113, 227, 0.28));
+}
+
+/* Optional support if active/current state is added later */
+.navbar-link.active,
+.navbar-link[aria-current="page"] {
+  color: var(--nav-accent);
+  background: var(--c-accent-bg, rgba(0, 113, 227, 0.08));
+}
+
+/* Navbar-specific logout button polish */
+.navbar .btn--danger {
+  min-height: 38px;
+  padding: 0.48rem 1rem;
+
+  font-size: var(--fs-13, 0.8125rem);
+  font-weight: var(--fw-semi, 600);
+  letter-spacing: -0.01em;
+
+  border-radius: var(--r-pill, 9999px);
+  background: var(--c-error, #ff3b30);
+  color: #ffffff;
+
+  box-shadow: none;
+}
+
+.navbar .btn--danger:hover {
+  background: #e8362b;
+  box-shadow: 0 3px 12px rgba(255, 59, 48, 0.22);
+}
+
+.navbar .btn--danger:active {
+  transform: scale(0.97);
+  background: #d12f25;
+  box-shadow: none;
+}
+
+.navbar .btn--danger:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(255, 59, 48, 0.22),
+    0 0 0 1px rgba(255, 59, 48, 0.28);
+}
+
+/* ================================================================
+  Responsive Navbar
+  ================================================================ */
+
+@media (max-width: 720px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--sp-3, 0.75rem);
+
+    padding: 0.85rem var(--sp-4, 1rem);
+    background: var(--nav-bg-solid);
+  }
+
+  .navbar-title {
+    font-size: var(--fs-17, 1.0625rem) !important;
+  }
+
+  .navbar-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.4rem;
+
+    overflow-x: auto;
+    padding-bottom: 0.1rem;
+
+    scrollbar-width: none;
+  }
+
+  .navbar-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navbar-link,
+  .navbar .btn--danger {
+    min-height: 36px;
+    padding: 0.45rem 0.85rem;
+    font-size: var(--fs-13, 0.8125rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar {
+    padding-inline: var(--sp-3, 0.75rem);
+  }
+
+  .navbar-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
+  }
+
+  .navbar-link,
+  .navbar .btn--danger {
+    width: 100%;
   }
 }

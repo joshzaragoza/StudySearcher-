@@ -61,42 +61,41 @@ function LostFoundPage() {
     }
 
     return (
-        <div>
+        <div className="lost-found-container">
             <h1>Lost & Found</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form className="lost-found-form" onSubmit={handleSubmit}>
                 <textarea
                     placeholder="Describe your lost item and where you last saw it..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     maxLength={5000}
                     rows={5}
-                    style={{ width: "100%", boxSizing: "border-box", resize: "vertical" }}
                 />
-                <p>{content.length} / 5000</p>
-                {message && <p style={{ color: "red" }}>{message}</p>}
-                <button type="submit">Post</button>
+                <p className="character-count">{content.length} / 5000</p>
+                {message && <p className="error-msg">{message}</p>}
+                <button className="btn btn--primary" type="submit">Post</button>
             </form>
 
             <hr />
 
             {posts.length === 0 ? (
-                <p>No lost item posts yet.</p>
+                <p className="empty-state">No lost item posts yet.</p>
             ) : (
-                <ul style={{ listStyle: "none", padding: 0 }}>
+                <ul className="lost-found-list">
                     {posts.map((post) => (
-                        <li key={post.id} style={{ marginBottom: "24px", textAlign: "left" }}>
+                        <li key={post.id} className="lost-found-post">
                             <strong>{post.poster_name}</strong>
-                            <span style={{ marginLeft: "12px", fontSize: "0.85em", color: "var(--text)" }}>
+                            <span className="post-time">
                                 {new Date(post.created_at).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })}
                             </span>
-                            <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>{post.content}</p>
+                            <p>{post.content}</p>
                         </li>
                     ))}
                 </ul>
             )}
 
-            <button onClick={() => window.location.href = "/home"}>Back to Home</button>
+            <button className="btn btn--secondary" onClick={() => window.location.href = "/home"}>Back to Home</button>
         </div>
     );
 }
