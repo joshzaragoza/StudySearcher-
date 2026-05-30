@@ -109,7 +109,7 @@ function ChatPage() {
         socket.emit("send_message", {
             conversationId,
             senderId: user.id,
-            body: `✅ ${user.name} accepted the study invite for ${ticket.class_code}.`,
+            body: `${user.name} accepted the study invite for ${ticket.class_code}.`,
         });
         markResponded(msg.id);
     }
@@ -119,7 +119,7 @@ function ChatPage() {
         socket.emit("send_message", {
             conversationId,
             senderId: user.id,
-            body: `❌ ${user.name} declined the study invite for ${ticket.class_code}.`,
+            body: `${user.name} declined the study invite for ${ticket.class_code}.`,
         });
         markResponded(msg.id);
     }
