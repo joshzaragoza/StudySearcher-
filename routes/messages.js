@@ -2,15 +2,20 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
+const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+
+// GET /api/messages/:conversationId
+// Takes in: conversationId as req.params.conversationId.
+// Returns: a list of messages for the given conversation, including each message's id, conversation_id, sender_id, sender_name, body, and created_at timestamp.
 router.get("/:conversationId", async (req, res) => {
     try {
         const { conversationId } = req.params;
 
         // Validate conversationId
-        if (!conversationId) {
-            return res.status(400).json({ message: "Missing conversationId query parameter." });
+        if (!isPositiveInteger(conversationId)) {
+            return res.status(400).json({ message: "Invalid conversation ID." });
         }
-
+        
         // Fetch messages for the given conversationId, along with sender's name
         const messagesResult = await pool.query(
             `

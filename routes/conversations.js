@@ -2,9 +2,20 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
+const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+
+
+// POST /api/conversations/open
+// Takes in: currentUserId and otherUserId in the request body.
+// Returns: the conversationId of the existing or newly created one-on-one conversation between the two users, or an error if a conversation cannot be opened (e.g. if either user has blocked the other).
 router.post("/open", async (req, res) => {
     try {
         const { currentUserId, otherUserId } = req.body;
+
+        // Validate user IDs
+        if (!isPositiveInteger(currentUserId) || !isPositiveInteger(otherUserId)) {
+            return res.status(400).json({ message: "Invalid user IDs." });
+        }
 
         if (!currentUserId || !otherUserId) {
             return res.status(400).json({ message: "Missing currentUserId or otherUserId." });
@@ -78,9 +89,17 @@ router.post("/open", async (req, res) => {
     }
 });
 
+// GET /api/conversations/:conversationId/other/:userId
+// Takes in: conversationId and userId as req.params.
+// Returns: the other user's id and name in the one-on-one conversation, or an error if the conversation doesn't exist, isn't a one-on-one, or the user isn't a member.
 router.get("/:conversationId/other/:userId", async (req, res) => {
     try {
         const { conversationId, userId } = req.params;
+
+        // Validate conversationId and userId
+        if (!isPositiveInteger(conversationId) || !isPositiveInteger(userId)) {
+            return res.status(400).json({ message: "Invalid conversation ID or user ID." });
+        }
 
         // check if the user is a member of the conversation
         const memberCheck = await pool.query(
@@ -118,6 +137,47 @@ router.get("/:conversationId/other/:userId", async (req, res) => {
         return res.json({ otherUser: otherUserResult.rows[0] });
     } catch (error) {
         console.error("Error fetching other user:", error);
+        res.status(500).json({ message: "Server error." });
+    }
+});
+
+// GET /api/conversations/:userId
+// Takes in: userId as req.params.userId.
+// Returns: a list of all one-on-one conversations the user is a member of, including each conversation's id and the other user's id and name, ordered by most recent conversation first.
+router.get("/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Validate userId
+        if (!isPositiveInteger(userId)) {
+            return res.status(400).json({ message: "Invalid user ID." });
+        }
+
+        // Fetch all one-on-one conversations for the user, along with the other user's info
+        const result = await pool.query(
+            `
+            SELECT
+                conversations.id AS conversation_id,
+                users.id AS other_user_id,
+                users.name AS other_user_name
+            FROM conversations
+            JOIN conversation_members current_member
+                ON conversations.id = current_member.conversation_id
+            JOIN conversation_members other_member
+                ON conversations.id = other_member.conversation_id
+            JOIN users
+                ON other_member.user_id = users.id
+            WHERE current_member.user_id = $1
+                AND other_member.user_id != $1
+                AND conversations.is_group = false
+            ORDER BY conversations.created_at DESC
+            `,
+            [userId]
+        );
+
+        res.json({ conversations: result.rows });
+    } catch (error) {
+        console.error("Error fetching conversations:", error);
         res.status(500).json({ message: "Server error." });
     }
 });

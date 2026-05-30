@@ -60,6 +60,9 @@ function MatchesPage() {
     }, [useAvailability]);
 
     async function openConversation(match) {
+        console.log("logged in user:", user);
+        console.log("match clicked:", match);
+
         try {
             const res = await fetch("http://localhost:3000/api/conversations/open", {
                 method: "POST",
@@ -110,7 +113,6 @@ function MatchesPage() {
 
         try {
             for (const recipientId of selectedRecipients) {
-                // Open or find existing DM
                 const convoRes = await fetch("http://localhost:3000/api/conversations/open", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -123,7 +125,6 @@ function MatchesPage() {
                 const convoData = await convoRes.json();
                 if (!convoRes.ok) continue;
 
-                // Send ticket message
                 await fetch("http://localhost:3000/api/tickets/send", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -171,7 +172,10 @@ function MatchesPage() {
                         Class + Time
                     </button>
                 </div>
-                <p>Matching Mode: {useAvailability ? "Class + Availability" : "Class Only"}</p>
+                <p>
+                    Matching Mode:{" "}
+                    {useAvailability ? "Class + Availability" : "Class Only"}
+                </p>
             </div>
 
             {message && <p>{message}</p>}
@@ -185,7 +189,6 @@ function MatchesPage() {
             {showForm && (
                 <div style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "16px", marginBottom: "16px", textAlign: "left" }}>
                     <h2>Create Study Ticket</h2>
-
                     <input
                         type="text"
                         placeholder="Class (e.g. CS35L)"
@@ -214,7 +217,6 @@ function MatchesPage() {
                         onChange={(e) => setTimeInput(e.target.value)}
                         style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px", boxSizing: "border-box" }}
                     />
-
                     <p style={{ marginBottom: "8px" }}>Send to:</p>
                     <ul style={{ listStyle: "none", padding: 0, marginBottom: "10px" }}>
                         {matches.map((match, i) => (
@@ -230,13 +232,10 @@ function MatchesPage() {
                             </li>
                         ))}
                     </ul>
-
                     <button className="btn btn--secondary" onClick={selectAll} style={{ marginBottom: "12px" }}>
                         Select All
                     </button>
-
                     <br />
-
                     <button className="btn btn--primary" onClick={handlePostTicket} disabled={sending}>
                         {sending ? "Sending..." : "Send Ticket"}
                     </button>

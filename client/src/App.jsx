@@ -1,12 +1,16 @@
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
+import LostFoundPage from "./pages/LostFoundPage";
 import NavBar from "./components/Navbar";
 import ChatPage from "./pages/ChatPage";  
+import MessagesPage from "./pages/MessagesPage";
+
+import "./App.css";
 
 function PrivateRoute({ children }) {
   const loggedInUser = localStorage.getItem("loggedInUser");
@@ -29,7 +33,7 @@ function AppMain() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
-        
+
         <Route
           path="/profile"
           element={
@@ -49,10 +53,28 @@ function AppMain() {
         />
 
         <Route
+          path="/messages"
+          element={
+            <PrivateRoute>
+              <MessagesPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/chat/:conversationId"
           element={
             <PrivateRoute>
               <ChatPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/lost-found"
+          element={
+            <PrivateRoute>
+              <LostFoundPage />
             </PrivateRoute>
           }
         />
