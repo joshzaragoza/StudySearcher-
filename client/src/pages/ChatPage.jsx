@@ -22,11 +22,19 @@ function ChatPage() {
     const [message, setMessage] = useState("");
     const [otherUser, setOtherUser] = useState(null);
     const [sharedClasses, setSharedClasses] = useState([]);
-    const [respondedTickets, setRespondedTickets] = useState(new Set());
 
     const storedUser = localStorage.getItem("loggedInUser");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const conversationId = window.location.pathname.split("/").pop();
+
+    const [respondedTickets, setRespondedTickets] = useState(() => {
+        try {
+            const stored = localStorage.getItem(`respondedTickets_${user?.id}`);
+            return stored ? new Set(JSON.parse(stored)) : new Set();
+        } catch {
+            return new Set();
+        }
+    });
 
     useEffect(() => {
         if (!user?.id) { setMessage("Please log in first."); return; }
@@ -88,6 +96,14 @@ function ChatPage() {
         else { setMessage(data.message || "Could not block user."); }
     }
 
+    function markResponded(msgId) {
+        setRespondedTickets(prev => {
+            const updated = new Set([...prev, msgId]);
+            localStorage.setItem(`respondedTickets_${user?.id}`, JSON.stringify([...updated]));
+            return updated;
+        });
+    }
+
     async function acceptTicket(msg) {
         const ticket = parseTicket(msg.body);
         try {
@@ -101,7 +117,7 @@ function ChatPage() {
                     class_code: ticket.class_code,
                 }),
             });
-            setRespondedTickets(prev => new Set([...prev, msg.id]));
+            markResponded(msg.id);
         } catch (err) {
             console.error("Could not accept ticket:", err);
         }
@@ -114,7 +130,7 @@ function ChatPage() {
             senderId: user.id,
             body: `❌ ${user.name} declined the study invite for ${ticket.class_code}.`,
         });
-        setRespondedTickets(prev => new Set([...prev, msg.id]));
+        markResponded(msg.id);
     }
 
     if (!user) { return <p>Please log in first.</p>; }
