@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 function MatchesPage() {
     const [matches, setMatches] = useState([]);
     const [message, setMessage] = useState("");
+    const [useAvailability, setUseAvailability] = useState(false);
+
 
     const storedUser = localStorage.getItem("loggedInUser");
     const user = storedUser ? JSON.parse(storedUser) : null;
@@ -15,7 +17,7 @@ function MatchesPage() {
             }
 
             try {
-                const res = await fetch(`http://localhost:3000/api/matches/${user.id}`);
+                const res = await fetch(`http://localhost:3000/api/matches/${user.id}?availability=${useAvailability}`);
                 const data = await res.json();
 
                 if (res.ok) {
@@ -57,7 +59,7 @@ function MatchesPage() {
         }
 
         fetchMatches();
-    }, []);
+    }, [useAvailability]);
 
     async function openConversation(match) {
         // debugging logs. 
@@ -89,14 +91,32 @@ function MatchesPage() {
         }
     }
 
-    return (
-        <div className="matches-container">
-            <div className="matches-header">
-                <h1>Study Partner Matches</h1>
-                <p>Here are your current matches based on your profile information.</p>
+            <div style={{ marginBottom: "20px" }}>
+                <button
+                    onClick={() => setUseAvailability(false)}
+                    disabled={!useAvailability}
+                >
+                    Class Only
+                </button>
+
+                <button
+                    onClick={() => setUseAvailability(true)}
+                    disabled={useAvailability}
+                    style={{ marginLeft: "10px" }}
+                >
+                    Class + Time
+                </button>
+
+                <p>
+                    Matching Mode:{" "}
+                    {useAvailability
+                        ? "Class + Availability"
+                        : "Class Only"}
+                </p>
+
             </div>
-            
-            {message && <p className="error-msg">{message}</p>}
+
+            {message && <p>{message}</p>}
 
             {matches.length === 0 ? (
                 <p className="no-matches">No matches found yet. Add classes to your profile first.</p>
