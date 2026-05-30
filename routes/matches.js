@@ -5,9 +5,12 @@ const router = express.Router();
 router.get("/:id", async (req, res) => {
     try {
         const userId = req.params.id;
+        const useAvailability = req.query.availability === "true";
 
-        const matchesResult = await pool.query(
-            `
+        let query;
+
+            if(useAvailability) {
+                query = `
             SELECT DISTINCT
                 users.id,
                 users.name,
@@ -34,8 +37,6 @@ router.get("/:id", async (req, res) => {
                 WHERE user_id = $1
             )
             AND users.id != $1
-<<<<<<< Updated upstream
-=======
             AND NOT EXISTS (
                 SELECT 1
                 FROM blocked_users
@@ -45,12 +46,41 @@ router.get("/:id", async (req, res) => {
                     (blocker_id = users.id AND blocked_id = $1)
             )
                     ORDER BY users.name, classes.code, myavailability.day_of_week, shared_start_time
->>>>>>> Stashed changes
-            `,
-            [userId]
-        );
+            `;
+            } else {
+                query = `
+            SELECT DISTINCT
+                users.id,
+                users.name,
+                users.uid,
+                classes.code AS shared_class
+            FROM users
+            JOIN user_classes 
+            ON users.id = user_classes.user_id
+            JOIN classes 
+            ON user_classes.class_id = classes.id
+            WHERE user_classes.class_id IN (
+                SELECT class_id
+                FROM user_classes
+                WHERE user_id = $1
+            )
+            AND users.id != $1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM blocked_users
+                WHERE 
+                    (blocker_id = $1 AND blocked_id = users.id)
+                    OR
+                    (blocker_id = users.id AND blocked_id = $1)
+            )
+                    ORDER BY users.name, classes.code
+            `;
+            }
+
+            const matchesResult = await pool.query(query, [userId]);
 
         res.json({ matches: matchesResult.rows });
+        
     } catch (error) {
         console.error("Error finding matches:", error);
         res.status(500).json({ message: "Server error." });
