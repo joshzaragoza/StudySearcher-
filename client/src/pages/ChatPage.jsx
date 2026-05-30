@@ -104,23 +104,14 @@ function ChatPage() {
         });
     }
 
-    async function acceptTicket(msg) {
+    function acceptTicket(msg) {
         const ticket = parseTicket(msg.body);
-        try {
-            await fetch("http://localhost:3000/api/tickets/accept", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    conversation_id: conversationId,
-                    acceptor_id: user.id,
-                    acceptor_name: user.name,
-                    class_code: ticket.class_code,
-                }),
-            });
-            markResponded(msg.id);
-        } catch (err) {
-            console.error("Could not accept ticket:", err);
-        }
+        socket.emit("send_message", {
+            conversationId,
+            senderId: user.id,
+            body: `✅ ${user.name} accepted the study invite for ${ticket.class_code}.`,
+        });
+        markResponded(msg.id);
     }
 
     function declineTicket(msg) {
