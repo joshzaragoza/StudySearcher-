@@ -8,7 +8,6 @@ function isTicket(body) {
 }
 
 function parseTicket(body) {
-    // Format: "Study Invite | CLASS | LOCATION | DATE at TIME | TICKET"
     const parts = body.split(" | ");
     return {
         class_code: parts[1] || "",
@@ -23,16 +22,14 @@ function ChatPage() {
     const [message, setMessage] = useState("");
     const [otherUser, setOtherUser] = useState(null);
     const [sharedClasses, setSharedClasses] = useState([]);
+    const [respondedTickets, setRespondedTickets] = useState(new Set());
 
     const storedUser = localStorage.getItem("loggedInUser");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const conversationId = window.location.pathname.split("/").pop();
 
     useEffect(() => {
-        if (!user?.id) {
-            setMessage("Please log in first.");
-            return;
-        }
+        if (!user?.id) { setMessage("Please log in first."); return; }
 
         async function fetchMessages() {
             const res = await fetch(`http://localhost:3000/api/messages/${conversationId}`);
@@ -45,15 +42,9 @@ function ChatPage() {
             try {
                 const res = await fetch(`http://localhost:3000/api/conversations/${conversationId}/other/${user.id}`);
                 const data = await res.json();
-                if (res.ok) {
-                    setOtherUser(data.otherUser);
-                    fetchSharedClasses(data.otherUser.id);
-                } else {
-                    setMessage(data.message || "Could not load chat user.");
-                }
-            } catch (error) {
-                setMessage("Could not connect to server.");
-            }
+                if (res.ok) { setOtherUser(data.otherUser); fetchSharedClasses(data.otherUser.id); }
+                else { setMessage(data.message || "Could not load chat user."); }
+            } catch { setMessage("Could not connect to server."); }
         }
 
         async function fetchSharedClasses(otherUserId) {
@@ -61,22 +52,17 @@ function ChatPage() {
                 const res = await fetch(`http://localhost:3000/api/matches/shared/${user.id}/${otherUserId}`);
                 const data = await res.json();
                 if (res.ok) { setSharedClasses(data.sharedClasses); }
-            } catch (error) {
-                console.error("Could not load shared classes:", error);
-            }
+            } catch (error) { console.error("Could not load shared classes:", error); }
         }
 
         fetchOtherUser();
         fetchMessages();
-
         socket.emit("join_conversation", { conversationId, userId: user.id });
-
         socket.on("new_message", (newMessage) => {
             if (String(newMessage.conversation_id) === String(conversationId)) {
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
+                setMessages((prev) => [...prev, newMessage]);
             }
         });
-
         return () => { socket.off("new_message"); };
     }, [conversationId, user?.id]);
 
@@ -115,12 +101,35 @@ function ChatPage() {
                     class_code: ticket.class_code,
                 }),
             });
+            setRespondedTickets(prev => new Set([...prev, msg.id]));
         } catch (err) {
             console.error("Could not accept ticket:", err);
         }
     }
 
+    function declineTicket(msg) {
+        const ticket = parseTicket(msg.body);
+        socket.emit("send_message", {
+            conversationId,
+            senderId: user.id,
+            body: `❌ ${user.name} declined the study invite for ${ticket.class_code}.`,
+        });
+        setRespondedTickets(prev => new Set([...prev, msg.id]));
+    }
+
     if (!user) { return <p>Please log in first.</p>; }
+
+    const cardStyle = {
+        background: "#f0f0f0",
+        border: "1px solid #ddd",
+        borderRadius: "12px",
+        padding: "14px 16px",
+        margin: "8px 0",
+        maxWidth: "260px",
+    };
+
+    const labelStyle = { fontSize: "11px", color: "#888", fontWeight: "600", textTransform: "uppercase", marginBottom: "2px" };
+    const valueStyle = { fontSize: "15px", fontWeight: "500", marginBottom: "10px" };
 
     return (
         <div className="chat-container">
@@ -143,30 +152,32 @@ function ChatPage() {
             <div className="messages">
                 {messages.map((msg) => {
                     const isSent = Number(msg.sender_id) === Number(user.id);
+                    const alreadyResponded = respondedTickets.has(msg.id);
 
                     if (isTicket(msg.body)) {
                         const ticket = parseTicket(msg.body);
                         return (
-                            <div key={msg.id} style={{
-                                background: "var(--surface, #f5f5f5)",
-                                border: "1px solid var(--border, #ddd)",
-                                borderRadius: "12px",
-                                padding: "16px",
-                                margin: "8px 0",
-                                maxWidth: "340px",
-                                alignSelf: isSent ? "flex-end" : "flex-start",
-                            }}>
-                                <p style={{ fontWeight: "bold", marginBottom: "8px" }}>📋 Study Invite</p>
-                                <p style={{ margin: "4px 0" }}><strong>Class:</strong> {ticket.class_code}</p>
-                                <p style={{ margin: "4px 0" }}><strong>Location:</strong> {ticket.location}</p>
-                                <p style={{ margin: "4px 0" }}><strong>When:</strong> {ticket.datetime}</p>
-                                {!isSent && (
+                            <div key={msg.id} style={{ ...cardStyle, alignSelf: isSent ? "flex-end" : "flex-start" }}>
+                                <div style={{ fontWeight: "700", marginBottom: "12px", fontSize: "15px" }}>📋 Study Invite</div>
+                                <div style={labelStyle}>Class</div>
+                                <div style={valueStyle}>{ticket.class_code}</div>
+                                <div style={labelStyle}>Location</div>
+                                <div style={valueStyle}>{ticket.location}</div>
+                                <div style={labelStyle}>When</div>
+                                <div style={{ ...valueStyle, marginBottom: "4px" }}>{ticket.datetime}</div>
+
+                                {!isSent && !alreadyResponded && (
                                     <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
                                         <button className="btn btn--primary" onClick={() => acceptTicket(msg)}>Accept</button>
-                                        <button className="btn btn--secondary" onClick={() => setMessage("Ticket declined.")}>Decline</button>
+                                        <button className="btn btn--secondary" onClick={() => declineTicket(msg)}>Decline</button>
                                     </div>
                                 )}
-                                {isSent && <p style={{ fontSize: "12px", color: "gray", marginTop: "8px" }}>Sent by you</p>}
+                                {!isSent && alreadyResponded && (
+                                    <div style={{ fontSize: "12px", color: "#aaa", marginTop: "8px" }}>You already responded.</div>
+                                )}
+                                {isSent && (
+                                    <div style={{ fontSize: "12px", color: "#aaa", marginTop: "8px" }}>Sent by you</div>
+                                )}
                             </div>
                         );
                     }
