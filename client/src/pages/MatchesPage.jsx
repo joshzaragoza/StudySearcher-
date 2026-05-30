@@ -21,7 +21,35 @@ function MatchesPage() {
                 const data = await res.json();
 
                 if (res.ok) {
-                    setMatches(data.matches);
+                    // For each match, also fetch the shared classes to display in the UI
+                    const matchesWithSharedClasses = await Promise.all(
+                        data.matches.map(async (match) => {
+                            try {
+                                const sharedRes = await fetch(
+                                    `http://localhost:3000/api/matches/shared/${user.id}/${match.id}`
+                                );
+                                const sharedData = await sharedRes.json();
+                                
+                                // If the shared classes fetch is successful, add the shared_classes array to the match object
+                                if (sharedRes.ok) {
+                                    return {
+                                        ...match,
+                                        shared_classes: sharedData.sharedClasses,
+                                    };
+                                }
+                            } catch (error) {
+                                console.error("Could not load shared classes:", error);
+                            }
+                            
+                            // If there was an error fetching shared classes, return the match object without the shared_classes field (or with it as an empty array)
+                            return {
+                                ...match,
+                                shared_classes: match.shared_class ? [match.shared_class] : [],
+                            };
+                        })
+                    );
+
+                    setMatches(matchesWithSharedClasses);
                 } else {
                     setMessage(data.message || "Could not load matches.");
                 }
@@ -33,9 +61,35 @@ function MatchesPage() {
         fetchMatches();
     }, [useAvailability]);
 
-    return (
-        <div>
-            <h1>Study Partner Matches</h1>
+    async function openConversation(match) {
+        // debugging logs. 
+        console.log("logged in user:", user);
+        console.log("match clicked:", match);
+        
+        try {
+            const res = await fetch("http://localhost:3000/api/conversations/open", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    currentUserId: user.id,
+                    otherUserId: match.id
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                // Handle successful conversation creation => redirect to chat page (TO BE COMPLETED)
+                window.location.href = `/chat/${data.conversationId}`;
+            } else {
+                setMessage(data.message || "Could not create conversation.");
+            }
+        } catch (error) {
+            setMessage("Could not connect to server.");
+        }
+    }
 
             <div style={{ marginBottom: "20px" }}>
                 <button
@@ -65,18 +119,25 @@ function MatchesPage() {
             {message && <p>{message}</p>}
 
             {matches.length === 0 ? (
-                <p>No matches found yet. Add classes to your profile first.</p>
+                <p className="no-matches">No matches found yet. Add classes to your profile first.</p>
             ) : (
-                <ul>
+                <ul className="matches-list">
                     {matches.map((match, index) => (
-                        <li key={index}>
-                            {match.name} — Shared class: {match.shared_class}
+                        <li key={index} className="match-card">
+                            {match.name} — Shared classes:{" "}
+                            {match.shared_classes?.length > 0
+                                ? match.shared_classes.join(", ")
+                                : match.shared_class || "None listed"}
+
+                            <button className="btn btn--primary" onClick={() => openConversation(match)}>
+                                Message
+                            </button>
                         </li>
                     ))}
                 </ul>
             )}
 
-            <button onClick={() => window.location.href = "/home"}>
+            <button className="btn btn--secondary" onClick={() => window.location.href = "/home"}>
                 Back to Home
             </button>
         </div>

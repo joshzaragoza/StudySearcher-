@@ -30,26 +30,36 @@ function LoginPage() {
     }
 
       return (
-    <form onSubmit={handleLogin}>
-      <h1>Log In</h1>
+        <div className="auth-container">
+            <form className="auth-box" onSubmit={handleLogin}>
+                <h1>Log In</h1>
 
-      <input
-        placeholder="UID"
-        value={uid}
-        onChange={(e) => setUid(e.target.value)}
-      />
+                <input
+                    placeholder="UID"
+                    value={uid}
+                    onChange={(e) => setUid(e.target.value)}
+                />
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-      <button type="submit">Log In</button>
+                <button className="btn btn--primary" type="submit">Log In</button>
 
-      <p>{message}</p>
-    </form>
+                <p>{message}</p>
+
+                <p
+                    className="auth-link"
+                    onClick={() => {window.location.href = "/signup"}}
+                >
+
+                    Don't have an account? Sign Up
+                </p>
+            </form>
+        </div>
      );
     }
 

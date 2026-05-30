@@ -1,29 +1,96 @@
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import MatchesPage from "./pages/MatchesPage";
 import ProfilePage from "./pages/ProfilePage";
+import LostFoundPage from "./pages/LostFoundPage";
+import NavBar from "./components/Navbar";
+import ChatPage from "./pages/ChatPage";  
+import MessagesPage from "./pages/MessagesPage";
+
+import "./App.css";
+
+function PrivateRoute({ children }) {
+  const loggedInUser = localStorage.getItem("loggedInUser");
+  if (!loggedInUser) {
+    return <Navigate to="/login" />;
+  }
+  return children;
+}
+
+function AppMain() {
+  const loggedInUser = localStorage.getItem("loggedInUser");
+  const isLoggedIn = !!loggedInUser;
+
+  return (
+    <>
+      {isLoggedIn && <NavBar />}
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/matches"
+          element={
+            <PrivateRoute>
+              <MatchesPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/messages"
+          element={
+            <PrivateRoute>
+              <MessagesPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chat/:conversationId"
+          element={
+            <PrivateRoute>
+              <ChatPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/lost-found"
+          element={
+            <PrivateRoute>
+              <LostFoundPage />
+            </PrivateRoute>
+          }
+        />
+
+      </Routes>
+    </>
+  );
+}
 
 function App() {
   return (
-    <BrowserRouter>
-      <nav>
-        <Link to="/signup">Sign Up</Link>
-        {" | "}
-        <Link to="/login">Log In</Link>
-      </nav>
-
-      <Routes>
-        <Route path="/" element={<Navigate to="/signup" />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/matches" element={<MatchesPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <AppMain />
+      </BrowserRouter>
+    </>
   );
 }
 
