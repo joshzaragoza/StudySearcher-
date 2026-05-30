@@ -1,22 +1,41 @@
 const express = require("express");
+const pool = require("../db/pool");
 const router = express.Router();
 
-// Create a new study ticket
-router.post("/", async (req, res) => {
-    // TODO: save ticket to database
-    res.status(201).json({ message: "Ticket created." });
+router.post("/send", async (req, res) => {
+    try {
+        const { conversation_id, sender_id, class_code, location, study_date, study_time } = req.body;
+
+        const body = `Study Invite | ${class_code} | ${location} | ${study_date} at ${study_time} | TICKET`;
+
+        await pool.query(
+            "INSERT INTO messages (conversation_id, sender_id, body) VALUES ($1, $2, $3)",
+            [conversation_id, sender_id, body]
+        );
+
+        return res.status(201).json({ message: "Ticket sent." });
+    } catch (error) {
+        console.error("Error sending ticket:", error);
+        return res.status(500).json({ message: "Server error." });
+    }
 });
 
-// Get all tickets visible to a user
-router.get("/:userId", async (req, res) => {
-    // TODO: fetch tickets from database
-    res.json({ tickets: [] });
-});
+router.post("/accept", async (req, res) => {
+    try {
+        const { conversation_id, acceptor_id, acceptor_name, class_code } = req.body;
 
-// Accept a ticket
-router.post("/:ticketId/accept", async (req, res) => {
-    // TODO: record acceptance and send auto DM
-    res.json({ message: "Ticket accepted." });
+        const body = `${acceptor_name} accepted the study session for ${class_code}.`;
+
+        await pool.query(
+            "INSERT INTO messages (conversation_id, sender_id, body) VALUES ($1, $2, $3)",
+            [conversation_id, acceptor_id, body]
+        );
+
+        return res.json({ message: "Acceptance sent." });
+    } catch (error) {
+        console.error("Error accepting ticket:", error);
+        return res.status(500).json({ message: "Server error." });
+    }
 });
 
 module.exports = router;
