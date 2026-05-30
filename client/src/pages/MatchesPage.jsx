@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 function MatchesPage() {
     const [matches, setMatches] = useState([]);
     const [message, setMessage] = useState("");
+    const [useAvailability, setUseAvailability] = useState(false);
     const [showForm, setShowForm] = useState(false);
-    const [tickets, setTickets] = useState([]);
+    const [sending, setSending] = useState(false);
 
     const [classInput, setClassInput] = useState("");
     const [locationInput, setLocationInput] = useState("");
     const [dateInput, setDateInput] = useState("");
     const [timeInput, setTimeInput] = useState("");
-    const [maxPeople, setMaxPeople] = useState("");
     const [selectedRecipients, setSelectedRecipients] = useState([]);
 
     const storedUser = localStorage.getItem("loggedInUser");
@@ -24,11 +24,30 @@ function MatchesPage() {
             }
 
             try {
-                const res = await fetch(`http://localhost:3000/api/matches/${user.id}`);
+                const res = await fetch(`http://localhost:3000/api/matches/${user.id}?availability=${useAvailability}`);
                 const data = await res.json();
 
                 if (res.ok) {
-                    setMatches(data.matches);
+                    const matchesWithSharedClasses = await Promise.all(
+                        data.matches.map(async (match) => {
+                            try {
+                                const sharedRes = await fetch(
+                                    `http://localhost:3000/api/matches/shared/${user.id}/${match.id}`
+                                );
+                                const sharedData = await sharedRes.json();
+                                if (sharedRes.ok) {
+                                    return { ...match, shared_classes: sharedData.sharedClasses };
+                                }
+                            } catch (error) {
+                                console.error("Could not load shared classes:", error);
+                            }
+                            return {
+                                ...match,
+                                shared_classes: match.shared_class ? [match.shared_class] : [],
+                            };
+                        })
+                    );
+                    setMatches(matchesWithSharedClasses);
                 } else {
                     setMessage(data.message || "Could not load matches.");
                 }
@@ -38,7 +57,7 @@ function MatchesPage() {
         }
 
         fetchMatches();
-    }, []);
+    }, [useAvailability]);
 
     async function openConversation(match) {
         try {
@@ -72,14 +91,11 @@ function MatchesPage() {
     }
 
     function selectAll() {
-        const filtered = matches
-            .filter(m => m.shared_class === classInput)
-            .map(m => m.id);
-        setSelectedRecipients(filtered);
+        setSelectedRecipients(matches.map(m => m.id));
     }
 
-    function handlePostTicket() {
-        if (!classInput || !locationInput || !dateInput || !timeInput || !maxPeople) {
+    async function handlePostTicket() {
+        if (!classInput || !locationInput || !dateInput || !timeInput) {
             setMessage("Please fill in all fields.");
             return;
         }
@@ -89,57 +105,85 @@ function MatchesPage() {
             return;
         }
 
-        const newTicket = {
-            id: Date.now(),
-            creator: user.name,
-            creatorId: user.id,
-            class_code: classInput,
-            location: locationInput,
-            date: dateInput,
-            time: timeInput,
-            max_people: parseInt(maxPeople),
-            acceptances: 0,
-            recipients: selectedRecipients
-        };
-
-        setTickets([...tickets, newTicket]);
-        setShowForm(false);
-        setClassInput("");
-        setLocationInput("");
-        setDateInput("");
-        setTimeInput("");
-        setMaxPeople("");
-        setSelectedRecipients([]);
+        setSending(true);
         setMessage("");
-    }
 
-    function handleAccept(ticketId) {
-        setTickets(tickets.map(t =>
-            t.id === ticketId
-                ? { ...t, acceptances: t.acceptances + 1 }
-                : t
-        ).filter(t => t.acceptances < t.max_people || t.id !== ticketId));
-    }
+        try {
+            for (const recipientId of selectedRecipients) {
+                // Open or find existing DM
+                const convoRes = await fetch("http://localhost:3000/api/conversations/open", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        currentUserId: user.id,
+                        otherUserId: recipientId
+                    })
+                });
 
-    const visibleTickets = tickets.filter(t =>
-        t.creatorId === user?.id || t.recipients.includes(user?.id)
-    );
+                const convoData = await convoRes.json();
+                if (!convoRes.ok) continue;
+
+                // Send ticket message
+                await fetch("http://localhost:3000/api/tickets/send", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        conversation_id: convoData.conversationId,
+                        sender_id: user.id,
+                        class_code: classInput,
+                        location: locationInput,
+                        study_date: dateInput,
+                        study_time: timeInput,
+                    })
+                });
+            }
+
+            setShowForm(false);
+            setClassInput("");
+            setLocationInput("");
+            setDateInput("");
+            setTimeInput("");
+            setSelectedRecipients([]);
+            setMessage("Study ticket sent!");
+        } catch (error) {
+            setMessage("Could not send ticket. Please try again.");
+        } finally {
+            setSending(false);
+        }
+    }
 
     return (
         <div className="matches-container">
-            <h1>Study Partner Matches</h1>
-            <p>Here are your current matches based on your profile information.</p>
+            <div className="matches-header">
+                <h1>Study Matches</h1>
+                <div style={{ marginBottom: "20px" }}>
+                    <button
+                        onClick={() => setUseAvailability(false)}
+                        disabled={!useAvailability}
+                    >
+                        Class Only
+                    </button>
+                    <button
+                        onClick={() => setUseAvailability(true)}
+                        disabled={useAvailability}
+                        style={{ marginLeft: "10px" }}
+                    >
+                        Class + Time
+                    </button>
+                </div>
+                <p>Matching Mode: {useAvailability ? "Class + Availability" : "Class Only"}</p>
+            </div>
 
-            {message && <p className="error-msg">{message}</p>}
+            {message && <p>{message}</p>}
 
             {!showForm && (
-                <button className="btn btn--primary" onClick={() => setShowForm(true)}>
+                <button className="btn btn--primary" onClick={() => { setShowForm(true); setMessage(""); }}>
                     + Create Study Ticket
                 </button>
             )}
 
             {showForm && (
-                <div style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "16px", marginBottom: "16px" }}>
+                <div style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "16px", marginBottom: "16px", textAlign: "left" }}>
                     <h2>Create Study Ticket</h2>
 
                     <input
@@ -147,56 +191,54 @@ function MatchesPage() {
                         placeholder="Class (e.g. CS35L)"
                         value={classInput}
                         onChange={(e) => setClassInput(e.target.value)}
+                        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px", boxSizing: "border-box" }}
                     />
                     <input
                         type="text"
                         placeholder="Location (e.g. Powell Library)"
                         value={locationInput}
                         onChange={(e) => setLocationInput(e.target.value)}
+                        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px", boxSizing: "border-box" }}
                     />
                     <input
                         type="text"
                         placeholder="Date (e.g. May 28)"
                         value={dateInput}
                         onChange={(e) => setDateInput(e.target.value)}
+                        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px", boxSizing: "border-box" }}
                     />
                     <input
                         type="text"
                         placeholder="Time (e.g. 3:00 PM)"
                         value={timeInput}
                         onChange={(e) => setTimeInput(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Max people (e.g. 3)"
-                        value={maxPeople}
-                        onChange={(e) => setMaxPeople(e.target.value)}
+                        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px", boxSizing: "border-box" }}
                     />
 
-                    <p>Send to:</p>
-                    <ul style={{ listStyle: "none", padding: 0 }}>
+                    <p style={{ marginBottom: "8px" }}>Send to:</p>
+                    <ul style={{ listStyle: "none", padding: 0, marginBottom: "10px" }}>
                         {matches.map((match, i) => (
-                            <li key={i}>
+                            <li key={i} style={{ marginBottom: "6px" }}>
                                 <label>
                                     <input
                                         type="checkbox"
                                         checked={selectedRecipients.includes(match.id)}
                                         onChange={() => toggleRecipient(match.id)}
                                     />
-                                    {" "}{match.name} — {match.shared_class}
+                                    {" "}{match.name} — {match.shared_classes?.join(", ") || match.shared_class}
                                 </label>
                             </li>
                         ))}
                     </ul>
 
-                    <button className="btn btn--secondary" onClick={selectAll}>
-                        Select all matched in {classInput || "this class"}
+                    <button className="btn btn--secondary" onClick={selectAll} style={{ marginBottom: "12px" }}>
+                        Select All
                     </button>
 
-                    <br /><br />
+                    <br />
 
-                    <button className="btn btn--primary" onClick={handlePostTicket}>
-                        Post Ticket
+                    <button className="btn btn--primary" onClick={handlePostTicket} disabled={sending}>
+                        {sending ? "Sending..." : "Send Ticket"}
                     </button>
                     {" "}
                     <button className="btn btn--secondary" onClick={() => { setShowForm(false); setMessage(""); }}>
@@ -205,43 +247,16 @@ function MatchesPage() {
                 </div>
             )}
 
-            {visibleTickets.length > 0 && (
-                <>
-                    <h2>Open Study Tickets</h2>
-                    <ul className="matches-list">
-                        {visibleTickets.map((ticket, i) => (
-                            <li key={i} className="match-card" style={{ flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
-                                <strong>{ticket.class_code} — {ticket.location}</strong>
-                                <span>{ticket.date} at {ticket.time} · Posted by {ticket.creator} · {ticket.acceptances}/{ticket.max_people} spots filled</span>
-                                <div>
-                                    {ticket.creatorId !== user?.id && (
-                                        <button className="btn btn--primary" onClick={() => handleAccept(ticket.id)}>
-                                            Accept
-                                        </button>
-                                    )}
-                                    {" "}
-                                    <button
-                                        className="btn btn--secondary"
-                                        onClick={() => openConversation({ id: ticket.creatorId })}
-                                    >
-                                        Message
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </>
-            )}
-
-            <h2>Your Matches</h2>
-
             {matches.length === 0 ? (
                 <p className="no-matches">No matches found yet. Add classes to your profile first.</p>
             ) : (
                 <ul className="matches-list">
                     {matches.map((match, index) => (
                         <li key={index} className="match-card">
-                            {match.name} — Shared class: {match.shared_class}
+                            {match.name} — Shared classes:{" "}
+                            {match.shared_classes?.length > 0
+                                ? match.shared_classes.join(", ")
+                                : match.shared_class || "None listed"}
                             <button className="btn btn--primary" onClick={() => openConversation(match)}>
                                 Message
                             </button>
