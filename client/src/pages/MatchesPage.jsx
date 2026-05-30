@@ -154,7 +154,7 @@ function MatchesPage() {
             {message && <p>{message}</p>}
 
             {!showForm && (
-                <button className="btn btn--primary" onClick={() => { setShowForm(true); setMessage(""); }}>
+                <button className="btn btn--primary" style={{ marginBottom: "24px" }} onClick={() => { setShowForm(true); setMessage(""); }}>
                     + Create Study Ticket
                 </button>
             )}
