@@ -90,7 +90,9 @@ function MatchesPage() {
             setMessage("Could not connect to server.");
         }
     }
-
+    return (
+        <div>
+            <h1>Study Matches</h1>
             <div style={{ marginBottom: "20px" }}>
                 <button
                     onClick={() => setUseAvailability(false)}
@@ -141,7 +143,7 @@ function MatchesPage() {
                 Back to Home
             </button>
         </div>
-    );
+        );
 }
 
 export default MatchesPage;
