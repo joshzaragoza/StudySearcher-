@@ -19,6 +19,7 @@ app.use("/api/lost-found", require("./routes/lostFound"));
 app.use("/api/conversations", require("./routes/conversations"));
 app.use("/api/messages", require("./routes/messages"));
 app.use("/api/block", require("./routes/block"));
+app.use("/api/tickets", require("./routes/tickets"));
 
 // Start the server and set up Socket.IO for real-time messaging
 const server = require("http").createServer(app);
