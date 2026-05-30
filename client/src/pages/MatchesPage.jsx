@@ -91,8 +91,9 @@ function MatchesPage() {
         }
     }
     return (
-        <div>
-            <h1>Study Matches</h1>
+        <div className="matches-container">
+            <div className="matches-header">
+                <h1>Study Matches</h1>
             <div style={{ marginBottom: "20px" }}>
                 <button
                     onClick={() => setUseAvailability(false)}
@@ -108,6 +109,7 @@ function MatchesPage() {
                 >
                     Class + Time
                 </button>
+            </div>
 
                 <p>
                     Matching Mode:{" "}
