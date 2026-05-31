@@ -21,7 +21,7 @@ The client sends REST requests to the Express API server for authentication, pro
 ### Study Partner Chat Sequence Diagram
 
 ![StudySearcher study partner chat sequence diagram](assets/sequence_diagram.png)
-
+ " 
 When a student opens the matches page, the client requests users with shared classes and optionally overlapping availability. Opening a match creates or reuses a conversation. The chat page joins a Socket.IO room after the server verifies membership. New messages are stored in PostgreSQL and broadcast to the conversation room.
 
 ## Setup Tutorial
