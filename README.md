@@ -10,6 +10,20 @@ StudySearcher is a platform made by students, for students. It helps students fi
 - Socket.IO WebSockets for real-time chat
 - bcrypt for password hashing
 
+## Architecture Diagrams
+
+### System Component Diagram
+
+![StudySearcher system component diagram](assets/component_diagram.png)
+
+The client sends REST requests to the Express API server for authentication, profiles, availability, matching, conversations, messages, and lost-and-found posts. Socket.IO handles chat events. The Express routes and Socket.IO server both use the Neon PostgreSQL database for persistent data.
+
+### Study Partner Chat Sequence Diagram
+
+![StudySearcher study partner chat sequence diagram](assets/sequence_diagram.png)
+
+When a student opens the matches page, the client requests users with shared classes and optionally overlapping availability. Opening a match creates or reuses a conversation. The chat page joins a Socket.IO room after the server verifies membership. New messages are stored in PostgreSQL and broadcast to the conversation room.
+
 ## Setup Tutorial
 
 ### Initial Setup (First Time)
