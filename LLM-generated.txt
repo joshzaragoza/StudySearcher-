@@ -1,0 +1,484 @@
+[GenAI Use] Prompt: "
+For the general CSS of our website I used Claude Sonnet 4.6 following the
+guidelines for prompt engineering outlined in lecture and assignment 6 to
+create the following prompt. I also used ChatGPT 5.5 to help me generate the
+instructions for this prompt.
+
+<Introduction>
+Act as an expert frontend UI/UX engineer and CSS specialist. You have deep
+expertise in writing clean, maintainable, modern pure CSS. You follow best
+practices like CSS custom properties, responsive design, accessibility,
+consistent spacing systems, polished typography, and smooth user interactions.
+<Introduction/>
+
+<Task>
+Write the CSS for the StudySearcher website using pure CSS only. The styling
+should apply consistently across all current pages: HomePage, LoginPage,
+SignupPage, ProfilePage, and MatchesPage.
+
+Do not modify the React/JSX code. Only create or update the CSS needed to
+style the existing pages.
+<Task/>
+
+<Context>
+This app is called StudySearcher. It helps students find study partners,
+create profiles, add classes, enter weekly availability, and view study
+partner matches based on shared classes.
+
+The website should feel modern, clean, lightweight, and polished, similar to
+an Apple style website or dashboard. The design should use a lighter color
+scheme based on whites, soft greys, subtle borders, and restrained accent
+colors.
+
+Avoid the previous css. Replace it with a lighter, minimal,
+premium-looking palette such as:
+
+#FFFFFF - main background
+#F5F5F7 - secondary background / page sections
+#E5E5EA - borders and dividers
+#D1D1D6 - muted UI elements
+#6E6E73 - secondary text
+#1D1D1F - primary text
+#0071E3 - primary accent / buttons / links
+#2997FF - hover accent
+#34C759 - success states
+#FF3B30 - error states
+
+The final design should feel bright, calm, organized, and easy to use.
+<Context/>
+
+I included the existing JSX source for ChatPage.jsx, HomePage.jsx,
+LoginPage.jsx, LostFoundPage.jsx, MatchesPage.jsx, MessagesPage.jsx,
+ProfilePage.jsx, and SignupPage.jsx in the prompt so that the generated CSS
+would match the classes and elements already used by the application.
+
+<Design Requirements>
+1. Use pure CSS only. Do not use Tailwind, Bootstrap, CSS frameworks,
+   animation libraries, or inline style changes.
+2. Create a polished Apple-inspired visual style:
+   - Light backgrounds
+   - Soft shadows
+   - Subtle borders
+   - Clean typography
+   - Rounded but not overly playful corners
+   - Spacious, balanced layout
+   - Minimal visual clutter
+3. Define a :root block with CSS custom properties for:
+   - Colors
+   - Typography
+   - Spacing
+   - Border radius
+   - Shadows
+   - Transitions
+4. Include a CSS reset/base layer to normalize browser defaults.
+5. Organize the CSS into clearly commented sections:
+   - Base
+   - Layout
+   - Typography
+   - Forms
+   - Buttons
+   - Cards / Panels
+   - Page-specific styling
+   - Animations
+   - Responsive
+6. Make the design fully responsive using mobile-first media queries.
+7. Add smooth animations and transitions using pure CSS:
+   - Button hover/active states
+   - Input focus states
+   - Form/card entrance animations
+   - Subtle page fade-in
+   - Smooth transform effects where appropriate
+8. Ensure all interactive elements feel responsive and polished:
+   - Buttons should have hover, focus, and active states
+   - Inputs should have clear focus styles
+   - Links should feel clickable
+9. Maintain good accessibility:
+   - Strong color contrast
+   - Visible keyboard focus states
+   - Readable font sizes
+   - Comfortable spacing between interactive elements
+10. Keep the CSS maintainable and reusable across all pages.
+<Design Requirements/>
+
+<Output>
+Provide the complete CSS file only. Do not modify or rewrite the React
+components.
+<Output/>
+"
+[GenAI Use] LLM Response Start
+Claude Sonnet 4.6 responded:
+"Good. Now I have a complete picture of every class, component, and
+interaction I need to style. Let me craft the CSS.
+App.css"
+
+The generated general website CSS was added to App.css.
+[GenAI Use] LLM Response End
+[GenAI Use] Reflection: I reviewed the generated general website CSS and
+used it as the base styling for the current pages. I kept the light theme,
+reusable variables, and responsive layout because they fit the visual design
+we wanted for StudySearcher.
+
+
+[GenAI Use] Prompt: "
+For this prompt, I used ChatGPT 5.5 to generate the prompt and the new CSS to
+add to App.css since I ran out of tokens on Claude.
+
+<Introduction>
+Act as an expert frontend UI/UX engineer and CSS specialist. You have deep
+expertise in writing clean, maintainable, modern pure CSS. You follow best
+practices like CSS custom properties, responsive design, accessibility,
+consistent spacing systems, polished typography, smooth user interactions,
+and component-scoped styling.
+<Introduction/>
+
+<Task>
+Modify App.css to style StudySearcher Navbar component.
+
+Do not modify the React component logic. Only write the CSS needed to style
+the existing Navbar component. The navbar styling should visually match the
+existing StudySearcher light Apple-inspired theme.
+<Task/>
+
+<Context>
+StudySearcher is a student-focused web app for finding study partners,
+managing profiles, adding classes, entering weekly availability, messaging
+matches, and using a lost-and-found board.
+
+The Navbar should feel modern, clean, lightweight, and polished. It should
+match a light Apple-style dashboard with whites, soft greys, subtle borders,
+restrained accent colors, and calm spacing.
+
+Use a lighter, minimal palette such as:
+
+#FFFFFF - main background
+#F5F5F7 - secondary background
+#E5E5EA - borders and dividers
+#D1D1D6 - muted UI elements
+#6E6E73 - secondary text
+#1D1D1F - primary text
+#0071E3 - primary accent / links
+#2997FF - hover accent
+#FF3B30 - logout / danger button
+
+Avoid dark navy styling.
+<Context/>
+
+<Navbar.jsx>
+function NavBar() {
+   return (
+       <nav className="navbar">
+           <h1 className="navbar-title">StudySearcher</h1>
+           <div className="navbar-links">
+               <a href="/home" className="navbar-link">Home</a>
+               <a href="/matches" className="navbar-link">Matches</a>
+               <a href="/messages" className="navbar-link">Messages</a>
+               <a href="/profile" className="navbar-link">Profile</a>
+               <button
+                   className="btn btn--danger"
+                   onClick={() => {
+                       localStorage.removeItem("loggedInUser");
+                       window.location.href = "/login";
+                   }}
+               >
+                   Logout
+               </button>
+           </div>
+       </nav>
+   );
+}
+
+export default NavBar;
+<Navbar.jsx/>
+
+<Design Requirements>
+1. Use pure CSS only.
+2. Create a polished Apple-inspired navbar:
+   - Sticky top positioning
+   - Light translucent or white background
+   - Subtle bottom border
+   - Soft shadow
+   - Backdrop blur if appropriate
+   - Compact brand title
+   - Clean horizontal navigation
+   - Pill-style nav links
+   - Polished logout button
+3. Define local CSS custom properties if useful, or rely on existing global
+   variables if available.
+4. Include hover, focus-visible, and active states for links and buttons.
+5. Maintain good accessibility:
+   - Strong color contrast
+   - Visible keyboard focus styles
+   - Comfortable click targets
+   - Readable font sizes
+6. Make it responsive:
+   - On desktop, title stays left and links stay right.
+   - On smaller screens, navbar can wrap or stack neatly.
+   - Links should not overflow or overlap.
+7. Keep corners refined, not overly playful.
+8. Keep the CSS maintainable and readable with clear comments.
+9. Do not style unrelated pages or components.
+10. Do not use Tailwind, Bootstrap, CSS frameworks, JavaScript, or inline
+    styles.
+<Design Requirements/>
+
+<Output>
+Provide the new App.css file.
+<Output/>
+"
+[GenAI Use] LLM Response Start
+/* ================================================================
+  Navbar - StudySearcher Apple-Inspired Light Theme
+  Scoped to Navbar.jsx only
+  ================================================================ */
+
+.navbar {
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --nav-bg-solid: var(--c-bg, #ffffff);
+  --nav-border: var(--c-border, #e5e5ea);
+  --nav-text: var(--c-text, #1d1d1f);
+  --nav-text-muted: var(--c-text-2, #6e6e73);
+  --nav-accent: var(--c-accent, #0071e3);
+  --nav-accent-hover: #2997ff;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4, 1rem);
+  width: 100%;
+  padding: 0.85rem clamp(1rem, 4vw, 2.5rem);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.045);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+}
+
+.navbar-title {
+  flex-shrink: 0;
+  font-size: var(--fs-19, 1.1875rem) !important;
+  font-weight: var(--fw-bold, 700);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--nav-text);
+  white-space: nowrap;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.navbar-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0.48rem 0.9rem;
+  border-radius: var(--r-pill, 9999px);
+  font-size: var(--fs-13, 0.8125rem);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--nav-text-muted);
+  background: transparent;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--t-2, 160ms ease),
+    background var(--t-2, 160ms ease),
+    box-shadow var(--t-2, 160ms ease),
+    transform var(--t-spring, 280ms cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+.navbar-link:hover {
+  color: var(--nav-accent);
+  background: var(--c-accent-bg, rgba(0, 113, 227, 0.08));
+}
+
+.navbar-link:active {
+  transform: scale(0.97);
+}
+
+.navbar-link:focus-visible {
+  outline: none;
+  color: var(--nav-accent);
+  box-shadow: var(--sh-focus, 0 0 0 3px rgba(0, 113, 227, 0.28));
+}
+
+.navbar-link.active,
+.navbar-link[aria-current="page"] {
+  color: var(--nav-accent);
+  background: var(--c-accent-bg, rgba(0, 113, 227, 0.08));
+}
+
+.navbar .btn--danger {
+  min-height: 38px;
+  padding: 0.48rem 1rem;
+  font-size: var(--fs-13, 0.8125rem);
+  font-weight: var(--fw-semi, 600);
+  letter-spacing: -0.01em;
+  border-radius: var(--r-pill, 9999px);
+  background: var(--c-error, #ff3b30);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.navbar .btn--danger:hover {
+  background: #e8362b;
+  box-shadow: 0 3px 12px rgba(255, 59, 48, 0.22);
+}
+
+.navbar .btn--danger:active {
+  transform: scale(0.97);
+  background: #d12f25;
+  box-shadow: none;
+}
+
+.navbar .btn--danger:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(255, 59, 48, 0.22),
+    0 0 0 1px rgba(255, 59, 48, 0.28);
+}
+
+@media (max-width: 720px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--sp-3, 0.75rem);
+    padding: 0.85rem var(--sp-4, 1rem);
+    background: var(--nav-bg-solid);
+  }
+
+  .navbar-title {
+    font-size: var(--fs-17, 1.0625rem) !important;
+  }
+
+  .navbar-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0.1rem;
+    scrollbar-width: none;
+  }
+
+  .navbar-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navbar-link,
+  .navbar .btn--danger {
+    min-height: 36px;
+    padding: 0.45rem 0.85rem;
+    font-size: var(--fs-13, 0.8125rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar {
+    padding-inline: var(--sp-3, 0.75rem);
+  }
+
+  .navbar-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
+  }
+
+  .navbar-link,
+  .navbar .btn--danger {
+    width: 100%;
+  }
+}
+[GenAI Use] LLM Response End
+[GenAI Use] Reflection: I reviewed the navbar CSS and added it to App.css.
+It matches the light visual theme used elsewhere in the site, and I kept the
+responsive layout so that the navigation remains usable on
+smaller screens and with a keyboard.
+
+
+[GenAI Use] Prompt: "
+<Introduction>
+Act as an expert frontend UI/UX engineer and CSS specialist. You write clean,
+maintainable, responsive pure CSS that matches an existing design system.
+<Introduction/>
+
+<Task>
+Modify the existing App.css file to restyle the StudySearcher Chat page and
+Messages page.
+
+Make them feel like an Instagram-inspired messaging experience while keeping
+the current light Apple-inspired StudySearcher design language.
+
+Only update the Chat and Messages CSS sections. Do not modify React or backend
+code.
+<Task/>
+
+<Context>
+StudySearcher is a student app for finding study partners and messaging
+matches.
+
+Keep the existing light theme:
+- White and soft grey backgrounds
+- Subtle borders
+- Soft shadows
+- Clean typography
+- Refined rounded corners
+- Blue accent for primary actions and sent messages
+- Red for danger actions
+
+Avoid dark navy styling, flashy gradients, or off-brand colors.
+<Context/>
+
+I included the existing App.jsx, MessagesPage.jsx, and ChatPage.jsx source
+code in the prompt.
+
+<Design Requirements>
+1. Use pure CSS only.
+2. Preserve existing App.css variables and global styles.
+3. Create a centered chat panel with:
+   - Polished header
+   - Shared classes as subtle text or badge
+   - Scrollable message area
+   - Left/right message bubbles
+   - Blue bubbles for the current user
+   - Soft grey/white bubbles for the other user
+   - Rounded composer input and send button
+4. Create a polished Messages inbox with:
+   - Conversation cards
+   - Avatar/initial treatment
+   - Name, preview, shared classes, and optional chevron
+   - Smooth hover/focus states
+5. Keep it responsive and accessible.
+6. Do not style unrelated pages.
+<Design Requirements/>
+
+<Output>
+Provide only the updated CSS code for the Chat and Messages sections of
+App.css.
+<Output/>
+"
+[GenAI Use] LLM Response Start
+SECTIONS 11-12 in App.css
+Also add this to MessagesPage.jsx
+<p
+  key={msg.id}
+  className={`message--${
+    Number(msg.sender_id) === Number(user.id) ? "sent" : "received"
+  }`}
+>
+
+The generated Chat and Messages CSS sections were added to App.css.
+[GenAI Use] LLM Response End
+[GenAI Use] Reflection: I reviewed the generated messaging styles and used
+them to change the chat and messages pages fit the rest of the website. I also
+checked the suggested className change so the sent and received messages can
+use different alignment and colors in the ChatPage.jsx.
