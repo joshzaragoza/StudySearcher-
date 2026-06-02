@@ -90,6 +90,15 @@ io.on("connection", (socket) => {
                 return;
             }
 
+            // format:
+            // {
+            //     id: 123,
+            //     conversation_id: 456,
+            //     sender_id: 789,
+            //     sender_name: "Alice",
+            //     body: "Hello, world!",
+            //     created_at: "2024-06-01T12:34:56.789Z"
+            // }
             const newMessage = await pool.query(
                 `
                 WITH inserted_message AS (
