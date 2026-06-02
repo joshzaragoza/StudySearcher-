@@ -71,6 +71,8 @@ Restart `npm run server` after making server-side changes.
 
 ## Neon Database
 
+The project database schema is documented in [`db/schema.sql`](db/schema.sql).
+
 1. Go to [Neon Console](https://console.neon.tech/).
 2. Open the `StudySearcher` project and verify that you are using the correct branch.
 3. Use **SQL Editor** and click **+** to run SQL queries.
