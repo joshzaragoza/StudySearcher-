@@ -91,6 +91,15 @@ function MatchesPage() {
         setSelectedRecipients(matches.map(m => m.id));
     }
 
+    function resetForm() {
+        setShowForm(false);
+        setClassInput("");
+        setLocationInput("");
+        setDateInput("");
+        setTimeInput(TIME_OPTIONS[0]);
+        setSelectedRecipients([]);
+    }
+
     async function handlePostTicket() {
         if (!classInput || !locationInput || !dateInput || !timeInput) {
             setMessage("Please fill in all fields.");
@@ -124,12 +133,7 @@ function MatchesPage() {
                     })
                 });
             }
-            setShowForm(false);
-            setClassInput("");
-            setLocationInput("");
-            setDateInput("");
-            setTimeInput(TIME_OPTIONS[0]);
-            setSelectedRecipients([]);
+            resetForm();
             setMessage("Study ticket sent!");
         } catch (error) {
             setMessage("Could not send ticket. Please try again.");
