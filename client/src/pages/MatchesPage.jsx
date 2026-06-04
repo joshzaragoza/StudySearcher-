@@ -20,7 +20,9 @@ function formatDate(dateStr) {
 function MatchesPage() {
     const [matches, setMatches] = useState([]);
     const [message, setMessage] = useState("");
-    const [useAvailability, setUseAvailability] = useState(false);
+    //const [useAvailability, setUseAvailability] = useState(false);
+    const [filterMode, setFilterMode] = useState("class");
+    const [classFilter, setClassFilter] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [sending, setSending] = useState(false);
 
@@ -40,7 +42,7 @@ function MatchesPage() {
                 return;
             }
             try {
-                const res = await fetch(`http://localhost:3000/api/matches/${user.id}?availability=${useAvailability}`);
+                const res = await fetch(`http://localhost:3000/api/matches/${user.id}?availability=${filterMode === "time"}`);
                 const data = await res.json();
                 if (res.ok) {
                     const matchesWithSharedClasses = await Promise.all(
@@ -64,7 +66,7 @@ function MatchesPage() {
             }
         }
         fetchMatches();
-    }, [useAvailability]);
+    }, [filterMode]);
 
     async function openConversation(match) {
         try {
@@ -144,15 +146,30 @@ function MatchesPage() {
 
     const inputStyle = { display: "block", width: "100%", marginBottom: "10px", padding: "8px", boxSizing: "border-box" };
 
+    const displayedMatches = filterMode === "specific"
+        ? matches.filter(m => m.shared_classes?.some(c => c.toLowerCase().includes(classFilter.toLowerCase())))
+        : matches;
+
     return (
         <div className="matches-container">
             <div className="matches-header">
                 <h1>Study Matches</h1>
                 <div style={{ marginBottom: "20px" }}>
-                    <button onClick={() => setUseAvailability(false)} disabled={!useAvailability}>Class Only</button>
-                    <button onClick={() => setUseAvailability(true)} disabled={useAvailability} style={{ marginLeft: "10px" }}>Class + Time</button>
+                    <button onClick={() => setFilterMode("class")} disabled={filterMode === "class"}>Class Only</button>
+                    <button onClick={() => setFilterMode("time")} disabled={filterMode === "time"} style={{ marginLeft: "10px" }}>Class + Time</button>
+                    <button onClick={() => setFilterMode("specific")} disabled={filterMode === "specific"} style={{ marginLeft: "10px" }}>Specific Class</button>
                 </div>
-                <p>Matching Mode: {useAvailability ? "Class + Availability" : "Class Only"}</p>
+                {filterMode === "specific" ? (
+                    <input
+                        type="text"
+                        placeholder="e.g. CS35L"
+                        value={classFilter}
+                        onChange={(e) => setClassFilter(e.target.value)}
+                        style={{ marginBottom: "12px", padding: "8px", width: "200px" }}
+                    />
+                ) : (
+                    <p>Matching Mode: {filterMode === "time" ? "Class + Availability" : "Class Only"}</p>
+                )}
             </div>
 
             {message && <p>{message}</p>}
@@ -257,11 +274,11 @@ function MatchesPage() {
                 </div>
             )}
 
-            {matches.length === 0 ? (
+            {displayedMatches.length === 0 ? (
                 <p className="no-matches">No matches found yet. Add classes to your profile first.</p>
             ) : (
                 <ul className="matches-list">
-                    {matches.map((match, index) => (
+                    {displayedMatches.map((match, index) => (
                         <li key={index} className="match-card">
                             {match.name} — Shared classes:{" "}
                             {match.shared_classes?.length > 0 ? match.shared_classes.join(", ") : match.shared_class || "None listed"}
