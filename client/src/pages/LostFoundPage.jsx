@@ -126,6 +126,9 @@ function LostFoundPage() {
                                 {Number(post.poster_id) !== Number(user?.id) && (
                                     <button className="btn btn--primary" onClick={() => openConversation(post.poster_id)}>Message</button>
                                 )}
+                                {Number(post.poster_id) === Number(user?.id) && (
+                                    <button className="btn btn--danger" onClick={() => resolvePost(post.id)}>Resolve</button>
+                                )}
                             </div>
                         </li>
                     ))}
