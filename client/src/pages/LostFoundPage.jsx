@@ -26,6 +26,21 @@ function LostFoundPage() {
         }
     }
 
+    async function openConversation(posterId) {
+        try {
+            const res = await fetch("http://localhost:3000/api/conversations/open", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ currentUserId: user.id, otherUserId: posterId })
+            });
+            const data = await res.json();
+            if (res.ok) { window.location.href = `/chat/${data.conversationId}`; }
+            else { setMessage(data.message || "Could not open conversation."); }
+        } catch (error) {
+            setMessage("Could not connect to server.");
+        }
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -90,6 +105,11 @@ function LostFoundPage() {
                                 {new Date(post.created_at).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })}
                             </span>
                             <p>{post.content}</p>
+                            <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                                {Number(post.poster_id) !== Number(user?.id) && (
+                                    <button className="btn btn--primary" onClick={() => openConversation(post.poster_id)}>Message</button>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>
