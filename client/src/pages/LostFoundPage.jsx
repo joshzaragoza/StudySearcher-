@@ -99,13 +99,15 @@ function LostFoundPage() {
             ) : (
                 <ul className="lost-found-list">
                     {posts.map((post) => (
-                        <li key={post.id} className="lost-found-post">
-                            <strong>{post.poster_name}</strong>
-                            <span className="post-time">
-                                {new Date(post.created_at).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })}
-                            </span>
-                            <p>{post.content}</p>
-                            <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                        <li key={post.id} className="lost-found-post" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                            <div style={{ flex: 1 }}>
+                                <strong>{post.poster_name}</strong>
+                                <span className="post-time">
+                                    {new Date(post.created_at).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })}
+                                </span>
+                                <p>{post.content}</p>
+                            </div>
+                            <div style={{ flexShrink: 0, marginLeft: "16px" }}>
                                 {Number(post.poster_id) !== Number(user?.id) && (
                                     <button className="btn btn--primary" onClick={() => openConversation(post.poster_id)}>Message</button>
                                 )}
