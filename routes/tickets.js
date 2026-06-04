@@ -6,6 +6,10 @@ router.post("/send", async (req, res) => {
     try {
         const { conversation_id, sender_id, class_code, location, study_date, study_time } = req.body;
 
+        if (!conversation_id || !sender_id || !class_code || !location || !study_date || !study_time) {
+            return res.status(400).json({ message: "Missing required fields." });
+        }
+
         const body = `Study Invite | ${class_code} | ${location} | ${study_date} at ${study_time} | TICKET`;
 
         await pool.query(
