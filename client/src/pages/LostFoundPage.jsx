@@ -41,6 +41,21 @@ function LostFoundPage() {
         }
     }
 
+    async function resolvePost(postId) {
+        try {
+            const res = await fetch(`http://localhost:3000/api/lost-found/${postId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: user.id })
+            });
+            const data = await res.json();
+            if (res.ok) { fetchPosts(); }
+            else { setMessage(data.message || "Could not resolve post."); }
+        } catch (error) {
+            setMessage("Could not connect to server.");
+        }
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
