@@ -16,6 +16,18 @@ function parseTicket(body) {
     };
 }
 
+const cardStyle = {
+    background: "#f0f0f0",
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    padding: "14px 16px",
+    margin: "8px 0",
+    maxWidth: "260px",
+};
+
+const labelStyle = { fontSize: "11px", color: "#888", fontWeight: "600", textTransform: "uppercase", marginBottom: "2px" };
+const valueStyle = { fontSize: "15px", fontWeight: "500", marginBottom: "10px" };
+
 function ChatPage() {
     const [messages, setMessages] = useState([]);
     const [body, setBody] = useState("");
@@ -125,18 +137,6 @@ function ChatPage() {
     }
 
     if (!user) { return <p>Please log in first.</p>; }
-
-    const cardStyle = {
-        background: "#f0f0f0",
-        border: "1px solid #ddd",
-        borderRadius: "12px",
-        padding: "14px 16px",
-        margin: "8px 0",
-        maxWidth: "260px",
-    };
-
-    const labelStyle = { fontSize: "11px", color: "#888", fontWeight: "600", textTransform: "uppercase", marginBottom: "2px" };
-    const valueStyle = { fontSize: "15px", fontWeight: "500", marginBottom: "10px" };
 
     return (
         <div className="chat-container">
