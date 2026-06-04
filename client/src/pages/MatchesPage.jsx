@@ -20,7 +20,6 @@ function formatDate(dateStr) {
 function MatchesPage() {
     const [matches, setMatches] = useState([]);
     const [message, setMessage] = useState("");
-    //const [useAvailability, setUseAvailability] = useState(false);
     const [filterMode, setFilterMode] = useState("class");
     const [classFilter, setClassFilter] = useState("");
     const [showForm, setShowForm] = useState(false);
