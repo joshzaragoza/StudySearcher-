@@ -2,7 +2,7 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
-const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+const { isPositiveInteger } = require("../utils/validation");
 
 // GET /api/lostfound
 // Returns a list of all lost and found posts, including each post's id, content, created_at timestamp, and the poster's name, ordered by most recent first.

@@ -2,7 +2,7 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
-const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+const { isPositiveInteger } = require("../utils/validation");
 
 // GET /api/matches/shared/:userId/:otherUserId
 // Takes in two user ids as route params

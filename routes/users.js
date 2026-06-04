@@ -2,7 +2,7 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
-const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+const { isPositiveInteger } = require("../utils/validation");
 
 // GET /api/users/:id/profile
 // Takes in: user id as req.params.id.

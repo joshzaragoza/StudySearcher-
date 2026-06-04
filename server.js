@@ -31,7 +31,7 @@ const io = new Server(server, {
 });
 
 // Helper function to validate that a value is a positive integer
-const isPositiveInteger = (value) => /^\d+$/.test(String(value)) && Number(value) > 0;
+const { isPositiveInteger } = require("./utils/validation");
 
 // Scocket.IO connection handling. Listen for users joining conversations and sending messages
 io.on("connection", (socket) => {
