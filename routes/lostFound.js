@@ -54,4 +54,31 @@ router.post("/", async (req, res) => {
     }
 });
 
+// DELETE /api/lost-found/:id
+// Deletes a lost/found post if the requesting user owns it.
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { user_id } = req.body;
+
+        if (!isPositiveInteger(id) || !isPositiveInteger(user_id)) {
+            return res.status(400).json({ message: "Invalid ID." });
+        }
+
+        const result = await pool.query(
+            "DELETE FROM lost_items WHERE id = $1 AND user_id = $2 RETURNING id",
+            [id, user_id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(403).json({ message: "Not authorized or post not found." });
+        }
+
+        return res.json({ message: "Post resolved." });
+    } catch (error) {
+        console.error("Error deleting lost item:", error);
+        return res.status(500).json({ message: "Server error." });
+    }
+});
+
 module.exports = router;
