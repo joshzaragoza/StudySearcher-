@@ -10,6 +10,7 @@ router.get("/", async (req, res) => {
     try {
         const result = await pool.query(
             `SELECT lost_items.id, lost_items.content, lost_items.created_at,
+                    lost_items.user_id AS poster_id,
                     users.name AS poster_name
              FROM lost_items
              JOIN users ON lost_items.user_id = users.id
