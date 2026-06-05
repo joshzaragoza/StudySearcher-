@@ -62,9 +62,30 @@ io.on("connection", (socket) => {
 
         // Join the socket.io room for the conversation
         socket.join(`conversation_${conversationId}`);
+        await pool.query(
+        `
+        UPDATE conversation_members
+        SET last_read_at = NOW()
+        WHERE conversation_id = $1 AND user_id = $2
+        `,
+        [conversationId, userId]
+        );
         console.log(`User ${userId} joined conversation ${conversationId}`);
     });
 
+    socket.on("watch_inbox", async ({ conversationIds, userId }) => {
+        if (!isPositiveInteger(userId)) return;
+        for (const convId of conversationIds) {
+            if (!isPositiveInteger(convId)) continue;
+            const check = await pool.query(
+            `SELECT 1 FROM conversation_members WHERE conversation_id = $1 AND user_id = $2`,
+            [convId, userId]
+            );
+            if (check.rows.length > 0) {
+            socket.join(`conversation_${convId}`);
+            }
+        }
+        });
     // Listen for messages being sent in a conversation
     socket.on("send_message", async ({ conversationId, senderId, body }) => {
         try {
