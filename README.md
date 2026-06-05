@@ -14,9 +14,9 @@ StudySearcher is a platform made by students, for students. It helps students fi
 
 ### System Component Diagram
 
-![StudySearcher system component diagram](assets/component_diagram.png)
+![StudySearcher State Machine diagram](assets/state_machine.png)
 
-The client sends REST requests to the Express API server for authentication, profiles, availability, matching, conversations, messages, and lost-and-found posts. Socket.IO handles chat events. The Express routes and Socket.IO server both use the Neon PostgreSQL database for persistent data.
+This diagram shows the Matches page as a left-to-right state machine. The flow starts when the user opens the Matches page. If the user is logged in, the app loads matches and then either shows matching students, shows no results, or displays an error. From the matches list, the user can change the matching mode to reload results or click Message to open a chat.
 
 ### Study Partner Chat Sequence Diagram
 
