@@ -12,7 +12,7 @@ StudySearcher is a platform made by students, for students. It helps students fi
 
 ## Architecture Diagrams
 
-### System Component Diagram
+### State Machine Diagram
 
 ![StudySearcher State Machine diagram](assets/state_machine.png)
 
@@ -21,7 +21,7 @@ This diagram shows the Matches page as a left-to-right state machine. The flow s
 ### Study Partner Chat Sequence Diagram
 
 ![StudySearcher study partner chat sequence diagram](assets/sequence_diagram.png)
- " 
+
 When a student opens the matches page, the client requests users with shared classes and optionally overlapping availability. Opening a match creates or reuses a conversation. The chat page joins a Socket.IO room after the server verifies membership. New messages are stored in PostgreSQL and broadcast to the conversation room.
 
 ## Setup Tutorial
