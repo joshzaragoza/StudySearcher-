@@ -77,3 +77,10 @@ The project database schema is documented in [`db/schema.sql`](db/schema.sql).
 2. Open the `StudySearcher` project and verify that you are using the correct branch.
 3. Use **SQL Editor** and click **+** to run SQL queries.
 4. Use the **Tables** tab to view tables or manually add, delete, and update records.
+
+## Test
+1. Launch server
+2. Launch Client
+3. run npx playwright test tests/e2e/SignupInvalid.spec.js
+4. run npx playwright test tests/e2e/LoggingProfile.spec.js
+5. run npx playwright test tests/e2e/MatchingSystem.spec.js
