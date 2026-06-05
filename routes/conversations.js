@@ -153,27 +153,40 @@ router.get("/:userId", async (req, res) => {
         }
 
         // Fetch all one-on-one conversations for the user, along with the other user's info
+        
         const result = await pool.query(
-            `
-            SELECT
-                conversations.id AS conversation_id,
-                users.id AS other_user_id,
-                users.name AS other_user_name
-            FROM conversations
-            JOIN conversation_members current_member
-                ON conversations.id = current_member.conversation_id
-            JOIN conversation_members other_member
-                ON conversations.id = other_member.conversation_id
-            JOIN users
-                ON other_member.user_id = users.id
-            WHERE current_member.user_id = $1
-                AND other_member.user_id != $1
-                AND conversations.is_group = false
-            ORDER BY conversations.created_at DESC
-            `,
-            [userId]
+        `
+        SELECT
+            conversations.id AS conversation_id,
+            users.id AS other_user_id,
+            users.name AS other_user_name,
+            MAX(messages.created_at) AS last_message_at,
+            COUNT(
+            CASE
+                WHEN messages.sender_id != $1
+                AND (cm_self.last_read_at IS NULL
+                    OR messages.created_at > cm_self.last_read_at)
+                THEN 1
+            END
+            ) AS unread_count
+        FROM conversations
+        JOIN conversation_members cm_self
+            ON conversations.id = cm_self.conversation_id
+            AND cm_self.user_id = $1
+        JOIN conversation_members other_member
+            ON conversations.id = other_member.conversation_id
+        JOIN users
+            ON other_member.user_id = users.id
+        LEFT JOIN messages
+            ON messages.conversation_id = conversations.id
+        WHERE cm_self.user_id = $1
+            AND other_member.user_id != $1
+            AND conversations.is_group = false
+        GROUP BY conversations.id, users.id, users.name, cm_self.last_read_at
+        ORDER BY last_message_at DESC NULLS LAST
+        `,
+        [userId]
         );
-
         res.json({ conversations: result.rows });
     } catch (error) {
         console.error("Error fetching conversations:", error);

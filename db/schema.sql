@@ -23,6 +23,7 @@ CREATE TABLE "conversation_members" (
     "conversation_id" integer,
     "user_id" integer,
     "joined_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+    "last_read_at" timestamp DEFAULT NULL,
     CONSTRAINT "conversation_members_pkey" PRIMARY KEY("conversation_id","user_id")
 );
 
